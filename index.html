@@ -135,6 +135,13 @@
       min-height: 0;
     }
 
+    .center-col {
+      min-width: 0;
+      display: grid;
+      gap: 14px;
+      align-content: start;
+    }
+
     .panel,
     .stage {
       background: var(--panel);
@@ -158,7 +165,7 @@
       min-width: 0;
       min-height: 0;
       display: grid;
-      grid-template-rows: minmax(340px, 1fr) 178px;
+      grid-template-rows: minmax(340px, 1fr) minmax(246px, 0.44fr);
       overflow: hidden;
     }
 
@@ -436,12 +443,12 @@
     .graph-panel {
       display: grid;
       grid-template-rows: auto 1fr;
-      min-height: 0;
+      min-height: 246px;
       background: #fff;
     }
 
     .graph-toolbar {
-      min-height: 44px;
+      min-height: 58px;
       border-bottom: 1px solid var(--line);
       display: flex;
       align-items: center;
@@ -449,6 +456,35 @@
       gap: 10px;
       padding: 8px 10px;
       flex-wrap: wrap;
+    }
+
+    .graph-title {
+      display: grid;
+      gap: 2px;
+      min-width: 188px;
+    }
+
+    .graph-title strong {
+      color: var(--ink);
+      font-size: 13px;
+      line-height: 1.15;
+      font-weight: 780;
+    }
+
+    .graph-title span {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.2;
+      font-weight: 650;
+    }
+
+    .graph-tools {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      min-width: 0;
     }
 
     .mode-group,
@@ -529,6 +565,121 @@
 
     .mission-panel {
       border-color: #c9d8d5;
+    }
+
+    .journey-panel {
+      display: grid;
+      gap: 11px;
+      border-color: #c9d8d5;
+      box-shadow: none;
+    }
+
+    .journey-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .journey-status {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+      font-weight: 680;
+    }
+
+    .journey-track {
+      height: 7px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #e8edea;
+      border: 1px solid #d3ddd8;
+    }
+
+    .journey-progress {
+      height: 100%;
+      width: 0%;
+      background: var(--accent);
+      transition: width 180ms ease;
+    }
+
+    .journey-steps {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .journey-step {
+      min-width: 0;
+      min-height: 58px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #fff;
+      color: var(--muted);
+      display: grid;
+      grid-template-columns: 24px 1fr;
+      grid-template-rows: auto auto;
+      align-items: center;
+      gap: 1px 8px;
+      padding: 8px;
+      text-align: left;
+      cursor: pointer;
+      transition: border-color 140ms ease, background 140ms ease, transform 140ms ease;
+    }
+
+    .journey-step:hover {
+      border-color: #aebdb8;
+      background: #f9fbfa;
+    }
+
+    .journey-step:active {
+      transform: translateY(1px);
+    }
+
+    .journey-step span {
+      grid-row: 1 / -1;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: #eef4f2;
+      color: var(--accent-strong);
+      font-size: 12px;
+      font-weight: 780;
+    }
+
+    .journey-step strong,
+    .journey-step em {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-style: normal;
+    }
+
+    .journey-step strong {
+      color: var(--ink);
+      font-size: 13px;
+      line-height: 1.15;
+      font-weight: 760;
+    }
+
+    .journey-step em {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.15;
+    }
+
+    .journey-step.active {
+      border-color: #72aaa5;
+      background: #e7f3f1;
+    }
+
+    .journey-step.done span {
+      background: var(--accent);
+      color: #fff;
     }
 
     .mission-kicker,
@@ -936,8 +1087,24 @@
         padding: 10px;
       }
 
+      .center-col {
+        order: 1;
+      }
+
+      .left-col {
+        order: 2;
+      }
+
+      .right-col {
+        order: 3;
+      }
+
+      .learning-panel {
+        order: 4;
+      }
+
       .stage {
-        grid-template-rows: 380px 210px;
+        grid-template-rows: 380px 340px;
       }
 
       .left-col,
@@ -952,11 +1119,38 @@
       .quiz-grid {
         grid-template-columns: 1fr 1fr;
       }
+
+      .journey-steps {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        overflow-x: visible;
+        padding-bottom: 0;
+      }
+
+      .journey-step:last-child {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .graph-toolbar {
+        align-items: stretch;
+      }
+
+      .graph-title,
+      .graph-tools,
+      .mode-group,
+      .line-group {
+        width: 100%;
+      }
+
+      .graph-tools {
+        justify-content: flex-start;
+      }
     }
 
     @media (max-width: 520px) {
       .stage {
-        grid-template-rows: 320px 230px;
+        grid-template-rows: 320px 360px;
       }
 
       .stage-controls {
@@ -967,6 +1161,10 @@
       .tool-button {
         min-height: 36px;
         padding: 0 10px;
+      }
+
+      .journey-head {
+        flex-direction: column;
       }
 
       .track-grid,
@@ -1108,7 +1306,48 @@
         </section>
       </aside>
 
-      <section class="stage" aria-label="Simulazioa">
+      <section class="center-col" aria-label="Simulazioaren lan-eremua">
+        <section class="panel journey-panel" aria-label="Saioaren ibilbidea">
+          <div class="journey-head">
+            <div>
+              <h2>Saioaren ibilbidea</h2>
+              <p class="journey-status" id="journeyStatus">1/5 · Prestatu</p>
+            </div>
+            <button class="tool-button primary" type="button" id="journeyNextButton">Hurrengo pausoa</button>
+          </div>
+          <div class="journey-track" aria-hidden="true">
+            <div class="journey-progress" id="journeyProgress"></div>
+          </div>
+          <div class="journey-steps" role="group" aria-label="Saioaren pausoak">
+            <button class="journey-step active" type="button" data-journey="0" aria-current="step">
+              <span>1</span>
+              <strong>Prestatu</strong>
+              <em>Hipotesia</em>
+            </button>
+            <button class="journey-step" type="button" data-journey="1">
+              <span>2</span>
+              <strong>Simulatu</strong>
+              <em>Fase gidatua</em>
+            </button>
+            <button class="journey-step" type="button" data-journey="2">
+              <span>3</span>
+              <strong>Datuak</strong>
+              <em>Neurketak</em>
+            </button>
+            <button class="journey-step" type="button" data-journey="3">
+              <span>4</span>
+              <strong>Erantzun</strong>
+              <em>Testak</em>
+            </button>
+            <button class="journey-step" type="button" data-journey="4">
+              <span>5</span>
+              <strong>Amaitu</strong>
+              <em>Txostena</em>
+            </button>
+          </div>
+        </section>
+
+        <section class="stage" id="simulationStage" aria-label="Simulazioa">
         <div class="canvas-wrap">
           <canvas id="sceneCanvas"></canvas>
           <div class="stage-controls">
@@ -1132,23 +1371,30 @@
         </div>
         <div class="graph-panel">
           <div class="graph-toolbar">
-            <div class="mode-group" role="group" aria-label="Grafikoaren ardatza">
-              <button class="mode-button active" type="button" data-mode="time">Denbora</button>
-              <button class="mode-button" type="button" data-mode="position">Posizioa</button>
-              <button class="mode-button" type="button" id="clearGraphButton">
-                <svg viewBox="0 0 24 24"><path d="M3 6 h18"></path><path d="M8 6 V4 h8 v2"></path><path d="M6 6 l1 16 h10 l1-16"></path></svg>
-                Garbitu
-              </button>
+            <div class="graph-title">
+              <strong id="graphTitle">Energia-denbora grafikoa</strong>
+              <span id="graphSubtitle">X ardatza: denbora · Y ardatza: energia</span>
             </div>
-            <div class="line-group">
-              <label class="line-pill"><input type="checkbox" data-line="kinetic" checked><span class="dot" style="background: var(--kinetic)"></span>Zin.</label>
-              <label class="line-pill"><input type="checkbox" data-line="potential" checked><span class="dot" style="background: var(--potential)"></span>Pot.</label>
-              <label class="line-pill"><input type="checkbox" data-line="thermal" checked><span class="dot" style="background: var(--thermal)"></span>Term.</label>
-              <label class="line-pill"><input type="checkbox" data-line="total" checked><span class="dot" style="background: var(--total)"></span>Guzt.</label>
+            <div class="graph-tools">
+              <div class="mode-group" role="group" aria-label="Grafikoaren ardatza">
+                <button class="mode-button active" type="button" data-mode="time">Denbora</button>
+                <button class="mode-button" type="button" data-mode="position">Posizioa</button>
+                <button class="mode-button" type="button" id="clearGraphButton">
+                  <svg viewBox="0 0 24 24"><path d="M3 6 h18"></path><path d="M8 6 V4 h8 v2"></path><path d="M6 6 l1 16 h10 l1-16"></path></svg>
+                  Garbitu
+                </button>
+              </div>
+              <div class="line-group">
+                <label class="line-pill"><input type="checkbox" data-line="kinetic" checked><span class="dot" style="background: var(--kinetic)"></span>Zin.</label>
+                <label class="line-pill"><input type="checkbox" data-line="potential" checked><span class="dot" style="background: var(--potential)"></span>Pot.</label>
+                <label class="line-pill"><input type="checkbox" data-line="thermal" checked><span class="dot" style="background: var(--thermal)"></span>Term.</label>
+                <label class="line-pill"><input type="checkbox" data-line="total" checked><span class="dot" style="background: var(--total)"></span>Guzt.</label>
+              </div>
             </div>
           </div>
           <canvas id="graphCanvas"></canvas>
         </div>
+      </section>
       </section>
 
       <aside class="stack right-col">
@@ -1225,7 +1471,7 @@
         </section>
       </aside>
 
-      <section class="panel learning-panel" aria-label="Ikaslearen lan-eremua">
+      <section class="panel learning-panel" id="learningPanel" aria-label="Ikaslearen lan-eremua">
         <div class="learning-head">
           <div>
             <h2>Ikaslearen lan-eremua</h2>
@@ -1450,6 +1696,7 @@
       showSpeed: true,
       showPie: true,
       guideStep: 0,
+      journeyStep: 0,
       conditionIndex: 0,
       conditionScore: 0,
       conditionAnswered: {},
@@ -1511,6 +1758,14 @@
         setup: { track: 'u', mass: 55, gravity: 9.8, friction: 0.055, graphMode: 'time' },
         focus: 'conclusionInput'
       }
+    ];
+
+    const journeySteps = [
+      { title: 'Prestatu', detail: 'Hipotesia', tab: 'worksheet', guideStep: 0, target: 'learning' },
+      { title: 'Simulatu', detail: 'Fase gidatua', tab: null, guideStep: 1, target: 'simulation' },
+      { title: 'Datuak', detail: 'Neurketak', tab: 'data', guideStep: null, target: 'learning' },
+      { title: 'Erantzun', detail: 'Testak', tab: 'quiz', guideStep: null, target: 'learning' },
+      { title: 'Amaitu', detail: 'Txostena', tab: 'report', guideStep: null, target: 'learning' }
     ];
 
     const quizQuestions = [
@@ -1659,6 +1914,8 @@
       kineticPct: document.getElementById('kineticPct'),
       potentialPct: document.getElementById('potentialPct'),
       thermalPct: document.getElementById('thermalPct'),
+      graphTitle: document.getElementById('graphTitle'),
+      graphSubtitle: document.getElementById('graphSubtitle'),
       guideStepCounter: document.getElementById('guideStepCounter'),
       guideProgress: document.getElementById('guideProgress'),
       guideTitle: document.getElementById('guideTitle'),
@@ -1668,6 +1925,11 @@
       guideApplyButton: document.getElementById('guideApplyButton'),
       guideCaptureButton: document.getElementById('guideCaptureButton'),
       guideNextButton: document.getElementById('guideNextButton'),
+      journeyStatus: document.getElementById('journeyStatus'),
+      journeyProgress: document.getElementById('journeyProgress'),
+      journeyNextButton: document.getElementById('journeyNextButton'),
+      simulationStage: document.getElementById('simulationStage'),
+      learningPanel: document.getElementById('learningPanel'),
       conditionCounter: document.getElementById('conditionCounter'),
       conditionTitle: document.getElementById('conditionTitle'),
       conditionScore: document.getElementById('conditionScore'),
@@ -2262,23 +2524,30 @@
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, w, h);
 
+      const compact = w < 520;
       const pad = {
-        left: 48,
-        right: 18,
-        top: 16,
-        bottom: 30
+        left: compact ? 54 : 62,
+        right: compact ? 18 : 26,
+        top: compact ? 30 : 32,
+        bottom: compact ? 44 : 48
       };
       const plotW = Math.max(1, w - pad.left - pad.right);
       const plotH = Math.max(1, h - pad.top - pad.bottom);
       const data = state.graphData.length ? state.graphData : [currentGraphPoint()];
       const visible = state.graphMode === 'time' ? data.filter(point => point.t >= Math.max(0, state.time - 18)) : data;
       const maxEnergy = Math.max(120, ...visible.map(point => point.total)) * 1.08;
+      const startTime = state.graphMode === 'time' ? Math.max(0, state.time - 18) : 0;
+      const endTime = state.graphMode === 'time' ? Math.max(18, state.time) : 1;
 
       ctx.save();
-      ctx.strokeStyle = '#e0e7e4';
+      ctx.fillStyle = '#fbfcfb';
+      ctx.fillRect(pad.left, pad.top, plotW, plotH);
+      ctx.strokeStyle = '#dfe7e4';
       ctx.lineWidth = 1;
-      ctx.fillStyle = '#61706d';
-      ctx.font = '12px sans-serif';
+      ctx.fillStyle = '#52635f';
+      ctx.font = `${compact ? 11 : 12}px sans-serif`;
+      ctx.textAlign = 'left';
+      ctx.fillText('Energia', pad.left, 18);
       for (let i = 0; i <= 4; i++) {
         const y = pad.top + plotH * (i / 4);
         ctx.beginPath();
@@ -2286,7 +2555,8 @@
         ctx.lineTo(w - pad.right, y);
         ctx.stroke();
         const value = maxEnergy * (1 - i / 4);
-        ctx.fillText(joules(value), 8, y + 4);
+        ctx.textAlign = 'right';
+        ctx.fillText(joules(value), pad.left - 8, y + 4);
       }
 
       for (let i = 0; i <= 5; i++) {
@@ -2295,17 +2565,20 @@
         ctx.moveTo(x, pad.top);
         ctx.lineTo(x, h - pad.bottom);
         ctx.stroke();
+        const xValue = state.graphMode === 'time'
+          ? `${round(startTime + (endTime - startTime) * (i / 5), 0)} s`
+          : `${Math.round((i / 5) * 100)}%`;
+        ctx.textAlign = 'center';
+        ctx.fillText(xValue, x, h - 18);
       }
 
       ctx.strokeStyle = '#9eadab';
+      ctx.lineWidth = 1.4;
       ctx.beginPath();
       ctx.moveTo(pad.left, pad.top);
       ctx.lineTo(pad.left, h - pad.bottom);
       ctx.lineTo(w - pad.right, h - pad.bottom);
       ctx.stroke();
-
-      const startTime = state.graphMode === 'time' ? Math.max(0, state.time - 18) : 0;
-      const endTime = state.graphMode === 'time' ? Math.max(18, state.time) : 1;
 
       function xFor(point) {
         if (state.graphMode === 'position') {
@@ -2323,7 +2596,7 @@
           continue;
         }
         ctx.strokeStyle = colors[key];
-        ctx.lineWidth = key === 'total' ? 3 : 2;
+        ctx.lineWidth = key === 'total' ? 3.2 : 2.2;
         ctx.beginPath();
         visible.forEach((point, index) => {
           const x = xFor(point);
@@ -2335,12 +2608,21 @@
           }
         });
         ctx.stroke();
+
+        const last = visible[visible.length - 1];
+        if (last) {
+          ctx.fillStyle = colors[key];
+          ctx.beginPath();
+          ctx.arc(xFor(last), yFor(last[key]), key === 'total' ? 4.2 : 3.4, 0, Math.PI * 2);
+          ctx.fill();
+        }
       }
 
-      ctx.fillStyle = '#61706d';
-      ctx.font = '12px sans-serif';
-      const axis = state.graphMode === 'time' ? 't (s)' : 'posizioa';
-      ctx.fillText(axis, w - pad.right - 52, h - 8);
+      ctx.fillStyle = '#52635f';
+      ctx.font = `${compact ? 11 : 12}px sans-serif`;
+      ctx.textAlign = 'right';
+      const axis = state.graphMode === 'time' ? 'Denbora (s)' : 'Pistako posizioa (%)';
+      ctx.fillText(axis, w - pad.right, h - 6);
       ctx.restore();
     }
 
@@ -2442,6 +2724,11 @@
       document.querySelectorAll('.mode-button[data-mode]').forEach(button => {
         button.classList.toggle('active', button.dataset.mode === state.graphMode);
       });
+      const isTime = state.graphMode === 'time';
+      els.graphTitle.textContent = isTime ? 'Energia-denbora grafikoa' : 'Energia-posizio grafikoa';
+      els.graphSubtitle.textContent = isTime
+        ? 'X ardatza: denbora · Y ardatza: energia'
+        : 'X ardatza: pistako posizioa · Y ardatza: energia';
     }
 
     function selectTrack(track, keepPosition = false) {
@@ -2471,6 +2758,73 @@
       resetSimulation();
     }
 
+    function scrollToWorkArea(target) {
+      const element = target === 'simulation' ? els.simulationStage : els.learningPanel;
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    function updateJourneyPanel() {
+      const step = journeySteps[state.journeyStep];
+      els.journeyStatus.textContent = `${state.journeyStep + 1}/${journeySteps.length} · ${step.title}`;
+      els.journeyProgress.style.width = `${(state.journeyStep / (journeySteps.length - 1)) * 100}%`;
+      els.journeyNextButton.textContent = state.journeyStep === journeySteps.length - 1 ? 'Amaituta' : 'Hurrengo pausoa';
+      els.journeyNextButton.disabled = state.journeyStep === journeySteps.length - 1;
+      document.querySelectorAll('.journey-step').forEach(button => {
+        const index = Number(button.dataset.journey);
+        const active = index === state.journeyStep;
+        button.classList.toggle('active', active);
+        button.classList.toggle('done', index < state.journeyStep);
+        if (active) {
+          button.setAttribute('aria-current', 'step');
+        } else {
+          button.removeAttribute('aria-current');
+        }
+      });
+    }
+
+    function inferJourneyStepFromTab(tabName) {
+      if (tabName === 'worksheet') {
+        return 0;
+      }
+      if (tabName === 'data') {
+        return 2;
+      }
+      if (tabName === 'quiz' || tabName === 'conditions') {
+        return 3;
+      }
+      if (tabName === 'report' || tabName === 'pdf') {
+        return 4;
+      }
+      return state.journeyStep;
+    }
+
+    function setJourneyStep(index, options = {}) {
+      const nextIndex = clamp(index, 0, journeySteps.length - 1);
+      state.journeyStep = nextIndex;
+      const step = journeySteps[nextIndex];
+      if (options.navigate) {
+        if (step.guideStep !== null) {
+          state.guideStep = step.guideStep;
+          if (step.target === 'simulation') {
+            applyGuideStep();
+          } else {
+            updateGuidePanel();
+          }
+        }
+        if (step.tab) {
+          setActiveTab(step.tab, { syncJourney: false });
+        }
+        scrollToWorkArea(step.target);
+      }
+      updateJourneyPanel();
+    }
+
+    function moveJourney(delta) {
+      setJourneyStep(state.journeyStep + delta, { navigate: true });
+    }
+
     function updateGuidePanel() {
       const step = guideSteps[state.guideStep];
       els.guideStepCounter.textContent = `${state.guideStep + 1}/${guideSteps.length} fasea`;
@@ -2490,11 +2844,13 @@
         target.focus({ preventScroll: true });
       }
       updateGuidePanel();
+      setJourneyStep(state.guideStep === 0 ? 0 : 1);
     }
 
     function moveGuide(delta) {
       state.guideStep = clamp(state.guideStep + delta, 0, guideSteps.length - 1);
       updateGuidePanel();
+      setJourneyStep(state.guideStep === 0 ? 0 : 1);
     }
 
     function renderConditionScenario() {
@@ -2571,6 +2927,9 @@
       });
       renderObservations();
       updateLearningStatus();
+      if (state.journeyStep < 2) {
+        setJourneyStep(2);
+      }
     }
 
     function renderObservations() {
@@ -2599,13 +2958,16 @@
       updateLearningStatus();
     }
 
-    function setActiveTab(tabName) {
+    function setActiveTab(tabName, options = {}) {
       document.querySelectorAll('.tab-button').forEach(button => {
         button.classList.toggle('active', button.dataset.tab === tabName);
       });
       document.querySelectorAll('.tab-panel').forEach(panel => {
         panel.classList.toggle('active', panel.id === `tab-${tabName}`);
       });
+      if (options.syncJourney !== false) {
+        setJourneyStep(inferJourneyStepFromTab(tabName));
+      }
     }
 
     function getSelectedAnswer(name) {
@@ -2634,6 +2996,12 @@
       state.quizScore = score;
       els.quizScore.textContent = `${score}/${quizQuestions.length}`;
       updateLearningStatus();
+      if (checkedAnswerCount() > 0 && state.journeyStep < 3) {
+        setJourneyStep(3);
+      }
+      if (score === quizQuestions.length && state.journeyStep < 4) {
+        setJourneyStep(4);
+      }
       return score;
     }
 
@@ -2842,6 +3210,12 @@
       els.guideNextButton.addEventListener('click', () => moveGuide(1));
       els.guideApplyButton.addEventListener('click', applyGuideStep);
       els.guideCaptureButton.addEventListener('click', captureObservation);
+      els.journeyNextButton.addEventListener('click', () => moveJourney(1));
+      document.querySelectorAll('.journey-step').forEach(button => {
+        button.addEventListener('click', () => {
+          setJourneyStep(Number(button.dataset.journey), { navigate: true });
+        });
+      });
       els.conditionPrevButton.addEventListener('click', () => moveConditionScenario(-1));
       els.conditionNextButton.addEventListener('click', () => moveConditionScenario(1));
       els.conditionApplyButton.addEventListener('click', applyConditionScenario);
@@ -2904,6 +3278,7 @@
     rebuildTrack(false);
     resetSimulation();
     updateGuidePanel();
+    updateJourneyPanel();
     renderConditionScenario();
     renderObservations();
     updateLearningStatus();
