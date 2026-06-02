@@ -523,6 +523,306 @@
       color: var(--ink);
     }
 
+    .mission-panel {
+      border-color: #c9d8d5;
+    }
+
+    .mission-kicker,
+    .learning-intro,
+    .field-hint,
+    .empty-state,
+    .feedback {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .mission-kicker {
+      margin-bottom: 8px;
+      font-weight: 720;
+      color: var(--accent-strong);
+    }
+
+    .progress-track {
+      height: 8px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #e8edea;
+      border: 1px solid #d3ddd8;
+      margin-bottom: 11px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 25%;
+      background: var(--accent);
+      transition: width 180ms ease;
+    }
+
+    .guide-copy {
+      display: grid;
+      gap: 7px;
+      margin-bottom: 12px;
+    }
+
+    .guide-copy h3 {
+      color: var(--ink);
+      font-size: 14px;
+      margin: 0;
+    }
+
+    .guide-copy p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .guide-actions,
+    .panel-actions,
+    .form-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .guide-actions .tool-button,
+    .panel-actions .tool-button,
+    .form-actions .tool-button {
+      min-height: 34px;
+      font-size: 12px;
+      padding: 0 10px;
+    }
+
+    .tool-button:disabled {
+      cursor: not-allowed;
+      opacity: 0.45;
+      transform: none;
+    }
+
+    .learning-panel {
+      grid-column: 1 / -1;
+      display: grid;
+      gap: 14px;
+      box-shadow: none;
+    }
+
+    .learning-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .status-pill {
+      min-height: 30px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #cddbd7;
+      border-radius: 999px;
+      padding: 0 11px;
+      background: #f8fbfa;
+      color: var(--accent-strong);
+      font-size: 12px;
+      font-weight: 720;
+      white-space: nowrap;
+    }
+
+    .learning-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 9px;
+    }
+
+    .tab-button {
+      min-height: 34px;
+      border: 1px solid transparent;
+      border-radius: 7px;
+      background: transparent;
+      color: var(--muted);
+      padding: 0 11px;
+      cursor: pointer;
+    }
+
+    .tab-button.active {
+      background: #e7f3f1;
+      border-color: #72aaa5;
+      color: #134d4a;
+      font-weight: 760;
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    .worksheet-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .field {
+      display: grid;
+      gap: 6px;
+      align-content: start;
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 680;
+    }
+
+    .field.wide {
+      grid-column: 1 / -1;
+    }
+
+    .field input,
+    .field textarea {
+      width: 100%;
+      border: 1px solid #cddbd7;
+      border-radius: 7px;
+      background: #fff;
+      color: var(--ink);
+      padding: 9px 10px;
+      line-height: 1.35;
+      resize: vertical;
+    }
+
+    .field textarea {
+      min-height: 92px;
+    }
+
+    .data-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 760px;
+      font-size: 12px;
+    }
+
+    .data-table th,
+    .data-table td {
+      border-bottom: 1px solid var(--line);
+      padding: 8px 9px;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .data-table th:first-child,
+    .data-table td:first-child,
+    .data-table th:nth-child(2),
+    .data-table td:nth-child(2) {
+      text-align: left;
+    }
+
+    .data-table th {
+      background: #f8fbfa;
+      color: var(--muted);
+      font-weight: 760;
+    }
+
+    .data-table tbody tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .empty-state {
+      padding: 14px;
+      border: 1px dashed #cddbd7;
+      border-radius: 8px;
+      background: #fbfcfb;
+    }
+
+    .quiz-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .quiz-item {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: #fbfcfb;
+    }
+
+    .quiz-item h3 {
+      color: var(--ink);
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .answer-list {
+      display: grid;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--ink);
+    }
+
+    .answer-list label {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      line-height: 1.35;
+    }
+
+    .answer-list input {
+      margin-top: 2px;
+      accent-color: var(--accent);
+    }
+
+    .feedback {
+      min-height: 18px;
+      margin-top: 8px;
+    }
+
+    .feedback.good {
+      color: #25714b;
+      font-weight: 720;
+    }
+
+    .feedback.warn {
+      color: #a24d31;
+      font-weight: 720;
+    }
+
+    .report-output {
+      min-height: 190px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfcfb;
+      padding: 14px;
+      color: var(--ink);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .report-output h3 {
+      color: var(--ink);
+      font-size: 15px;
+      margin: 0 0 8px;
+    }
+
+    .report-output p,
+    .report-output ul {
+      margin: 0 0 9px;
+    }
+
+    .report-output ul {
+      padding-left: 18px;
+    }
+
     @media (max-width: 1120px) {
       .workspace {
         grid-template-columns: 248px minmax(390px, 1fr);
@@ -560,7 +860,9 @@
 
       .track-grid,
       .toggles,
-      .readout-grid {
+      .readout-grid,
+      .worksheet-grid,
+      .quiz-grid {
         grid-template-columns: 1fr 1fr;
       }
     }
@@ -583,8 +885,14 @@
       .track-grid,
       .toggles,
       .readout-grid,
-      .pie-wrap {
+      .pie-wrap,
+      .worksheet-grid,
+      .quiz-grid {
         grid-template-columns: 1fr;
+      }
+
+      .learning-head {
+        flex-direction: column;
       }
 
       .energy-row {
@@ -691,14 +999,24 @@
           </div>
         </section>
 
-        <section class="panel">
+        <section class="panel mission-panel">
           <div class="section-title">
-            <h2>Erronka azkarra</h2>
+            <h2>Ikerketa gidatua</h2>
           </div>
-          <div class="challenge">
-            <p><strong>1.</strong> Masa bikoiztuta, abiadura maximoa aldatzen da?</p>
-            <p><strong>2.</strong> Marruskadurarekin, nora doa energia mekanikoaren zati bat?</p>
-            <p><strong>3.</strong> Loop-a osatzeko, zein hasierako altuera behar du patinatzaileak?</p>
+          <p class="mission-kicker" id="guideStepCounter">1/4 fasea</p>
+          <div class="progress-track" aria-hidden="true">
+            <div class="progress-fill" id="guideProgress"></div>
+          </div>
+          <div class="guide-copy">
+            <h3 id="guideTitle">Hipotesia eta abiapuntua</h3>
+            <p id="guidePrompt">Aurreikusi zer gertatuko den energia zinetikoarekin patinatzailea beherantz doanean.</p>
+            <p class="field-hint" id="guideSetupNote">U-pista, marruskadurarik gabe, Lurreko grabitatea.</p>
+          </div>
+          <div class="guide-actions">
+            <button class="tool-button" type="button" id="guidePrevButton">Aurrekoa</button>
+            <button class="tool-button" type="button" id="guideApplyButton">Fasea prestatu</button>
+            <button class="tool-button" type="button" id="guideCaptureButton">Datuak hartu</button>
+            <button class="tool-button primary" type="button" id="guideNextButton">Hurrengoa</button>
           </div>
         </section>
       </aside>
@@ -769,6 +1087,12 @@
               <strong id="accelReadout">0.00 m/s<sup>2</sup></strong>
             </div>
           </div>
+          <div class="panel-actions" style="margin-top: 10px;">
+            <button class="tool-button" type="button" id="captureDataButton">
+              <svg viewBox="0 0 24 24"><path d="M12 5 v14"></path><path d="M5 12 h14"></path></svg>
+              Datuak hartu
+            </button>
+          </div>
         </section>
 
         <section class="panel">
@@ -813,6 +1137,143 @@
           </div>
         </section>
       </aside>
+
+      <section class="panel learning-panel" aria-label="Ikaslearen lan-eremua">
+        <div class="learning-head">
+          <div>
+            <h2>Ikaslearen lan-eremua</h2>
+            <p class="learning-intro">Energia mekanikoaren kontserbazioa aztertzeko fitxa, datu-bilketa eta galdetegia.</p>
+          </div>
+          <div class="status-pill" id="learningStatus">0 datu · 0/4 galdetegi</div>
+        </div>
+
+        <div class="learning-tabs" role="tablist" aria-label="Lan-eremuko atalak">
+          <button class="tab-button active" type="button" data-tab="worksheet">Fitxa</button>
+          <button class="tab-button" type="button" data-tab="data">Datuak</button>
+          <button class="tab-button" type="button" data-tab="quiz">Galdetegia</button>
+          <button class="tab-button" type="button" data-tab="report">Txostena</button>
+        </div>
+
+        <section class="tab-panel active" id="tab-worksheet">
+          <div class="worksheet-grid">
+            <label class="field">
+              Ikaslea
+              <input id="studentName" type="text" autocomplete="name">
+            </label>
+            <label class="field">
+              Taldea
+              <input id="studentGroup" type="text">
+            </label>
+            <label class="field wide">
+              1. Hipotesia
+              <textarea id="hypothesisInput">Marruskadurarik gabe, energia potentziala energia zinetiko bihurtuko dela uste dut.</textarea>
+              <span class="field-hint">Aurreikuspena idatzi eta gero konprobatu datuekin.</span>
+            </label>
+            <label class="field wide">
+              2. Aldagaiak kontrolatzea
+              <textarea id="methodInput">Aldagai bakarra aldatuko dut proba bakoitzean: lehenik masa, gero marruskadura.</textarea>
+            </label>
+            <label class="field wide">
+              3. Grafikoaren interpretazioa
+              <textarea id="graphInput"></textarea>
+              <span class="field-hint">Azaldu noiz den energia zinetikoa handiena eta noiz energia potentziala handiena.</span>
+            </label>
+            <label class="field wide">
+              4. Ondorio zientifikoa
+              <textarea id="conclusionInput"></textarea>
+              <span class="field-hint">Erabili gutxienez bi datu: energia totalaren balioa eta energia termikoaren aldaketa.</span>
+            </label>
+            <label class="field wide">
+              5. Transferentzia
+              <textarea id="transferInput"></textarea>
+              <span class="field-hint">Lotu ikasitakoa errusiar mendiekin, balaztearekin edo kirol batean energia-galerarekin.</span>
+            </label>
+          </div>
+        </section>
+
+        <section class="tab-panel" id="tab-data">
+          <div class="form-actions" style="margin-bottom: 10px;">
+            <button class="tool-button primary" type="button" id="captureDataButtonPanel">Datuak hartu</button>
+            <button class="tool-button" type="button" id="clearDataButton">Datuak garbitu</button>
+          </div>
+          <div class="data-wrap" id="dataTableWrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Fasea</th>
+                  <th>Masa</th>
+                  <th>g</th>
+                  <th>Marr.</th>
+                  <th>Altuera</th>
+                  <th>v</th>
+                  <th>Ez</th>
+                  <th>Ep</th>
+                  <th>Et</th>
+                  <th>Guztira</th>
+                </tr>
+              </thead>
+              <tbody id="observationBody"></tbody>
+            </table>
+          </div>
+          <p class="empty-state" id="dataEmptyState">Oraindik ez dago daturik. Hartu neurketa bat simulazioan une esanguratsu batean.</p>
+        </section>
+
+        <section class="tab-panel" id="tab-quiz">
+          <div class="quiz-grid">
+            <article class="quiz-item">
+              <h3>1. Masa bikoizten bada, altuera berdinarekin abiadura maximoa...</h3>
+              <div class="answer-list">
+                <label><input type="radio" name="q1" value="double"> bikoiztu egiten da.</label>
+                <label><input type="radio" name="q1" value="same"> ez da zertan aldatzen, energia/m masa berdin mantentzen bada.</label>
+                <label><input type="radio" name="q1" value="zero"> zero bihurtzen da.</label>
+              </div>
+              <p class="feedback" id="feedback-q1"></p>
+            </article>
+            <article class="quiz-item">
+              <h3>2. Marruskadura dagoenean, energia mekanikoaren zati bat...</h3>
+              <div class="answer-list">
+                <label><input type="radio" name="q2" value="thermal"> energia termiko bihurtzen da.</label>
+                <label><input type="radio" name="q2" value="lost"> desagertu egiten da.</label>
+                <label><input type="radio" name="q2" value="gravity"> grabitate bihurtzen da.</label>
+              </div>
+              <p class="feedback" id="feedback-q2"></p>
+            </article>
+            <article class="quiz-item">
+              <h3>3. Energia potentzial grabitatorioa handiena da...</h3>
+              <div class="answer-list">
+                <label><input type="radio" name="q3" value="top"> altuera handiena den puntuan.</label>
+                <label><input type="radio" name="q3" value="bottom"> pistaren beheko puntuan.</label>
+                <label><input type="radio" name="q3" value="fast"> abiadura handiena den unean beti.</label>
+              </div>
+              <p class="feedback" id="feedback-q3"></p>
+            </article>
+            <article class="quiz-item">
+              <h3>4. Loop-a osatzeko baldintza nagusia da...</h3>
+              <div class="answer-list">
+                <label><input type="radio" name="q4" value="mass"> masa oso handia izatea.</label>
+                <label><input type="radio" name="q4" value="height"> hasieran energia/altuera nahikoa izatea.</label>
+                <label><input type="radio" name="q4" value="friction"> marruskadura ahalik eta handiena izatea.</label>
+              </div>
+              <p class="feedback" id="feedback-q4"></p>
+            </article>
+          </div>
+          <div class="form-actions">
+            <button class="tool-button primary" type="button" id="checkQuizButton">Galdetegia zuzendu</button>
+            <span class="status-pill" id="quizScore">0/4</span>
+          </div>
+        </section>
+
+        <section class="tab-panel" id="tab-report">
+          <div class="form-actions" style="margin-bottom: 10px;">
+            <button class="tool-button primary" type="button" id="generateReportButton">Txostena sortu</button>
+            <button class="tool-button" type="button" id="printReportButton">Inprimatu</button>
+          </div>
+          <div class="report-output" id="reportOutput">
+            <p>Txostena sortzean, fitxako erantzunak, hartutako datuak eta galdetegiaren emaitza hemen agertuko dira.</p>
+          </div>
+        </section>
+      </section>
     </main>
   </div>
 
@@ -858,6 +1319,9 @@
       showPath: true,
       showSpeed: true,
       showPie: true,
+      guideStep: 0,
+      observations: [],
+      quizScore: 0,
       graphData: [],
       pathDots: [],
       pathClock: 0,
@@ -872,6 +1336,76 @@
         { x: 0.92, h: 3.95 }
       ]
     };
+
+    const trackNames = {
+      u: 'U-pista',
+      ramp: 'Arrapala',
+      double: 'Bi putzu',
+      loop: 'Loop-a',
+      custom: 'Pertsonala'
+    };
+
+    const guideSteps = [
+      {
+        title: 'Hipotesia eta abiapuntua',
+        short: 'Hipotesia',
+        prompt: 'Aurreikusi nola aldatuko diren energia potentziala eta zinetikoa patinatzailea beherantz doanean.',
+        note: 'U-pista, marruskadurarik gabe, Lurreko grabitatea.',
+        setup: { track: 'u', mass: 55, gravity: 9.8, friction: 0, graphMode: 'time' },
+        focus: 'hypothesisInput'
+      },
+      {
+        title: 'Kontserbazioa marruskadurarik gabe',
+        short: 'Kontserbazioa',
+        prompt: 'Hartu datuak goian, behean eta berriz igotzean. Begiratu energia totalaren balioa ia konstante mantentzen den.',
+        note: 'Aldagaiak mantendu: masa 55 kg, g = 9.8 m/s², marruskadura 0.',
+        setup: { track: 'u', mass: 55, gravity: 9.8, friction: 0, graphMode: 'position' },
+        focus: 'graphInput'
+      },
+      {
+        title: 'Masa aldatuta',
+        short: 'Masa',
+        prompt: 'Aldatu masa eta konparatu abiadura maximoa. Datuetan oinarrituta azaldu zer aldatzen den eta zer ez.',
+        note: 'Pista bera eta marruskadurarik gabe; masa 90 kg-ra eramango da.',
+        setup: { track: 'u', mass: 90, gravity: 9.8, friction: 0, graphMode: 'time' },
+        focus: 'methodInput'
+      },
+      {
+        title: 'Marruskadura eta energia termikoa',
+        short: 'Marruskadura',
+        prompt: 'Jarri marruskadura eta behatu energia termikoa. Azaldu zergatik gutxitzen den energia mekanikoa.',
+        note: 'U-pista, masa 55 kg, marruskadura 0.055.',
+        setup: { track: 'u', mass: 55, gravity: 9.8, friction: 0.055, graphMode: 'time' },
+        focus: 'conclusionInput'
+      }
+    ];
+
+    const quizQuestions = [
+      {
+        name: 'q1',
+        correct: 'same',
+        ok: 'Ondo: altuera bera bada, abiadura maximoa ez da masaren araberakoa eredu ideal honetan.',
+        bad: 'Berrikusi masa-proba: energia handiagoa da, baina energia masa unitateko berdina izan daiteke.'
+      },
+      {
+        name: 'q2',
+        correct: 'thermal',
+        ok: 'Ondo: marruskadurak energia mekanikoaren parte bat energia termiko bihurtzen du.',
+        bad: 'Begiratu Et barra: marruskadurarekin energia termikoa handitzen da.'
+      },
+      {
+        name: 'q3',
+        correct: 'top',
+        ok: 'Ondo: Ep = m·g·h, beraz altuerarekin handitzen da.',
+        bad: 'Begiratu altuera eta energia potentziala batera: altuera handiena denean Ep ere handiena da.'
+      },
+      {
+        name: 'q4',
+        correct: 'height',
+        ok: 'Ondo: loop-a gainditzeko hasierako energia nahikoa behar da.',
+        bad: 'Probatu loop-a: altuera/energia hasierakoa txikia bada, ez du goiko puntua gainditzen.'
+      }
+    ];
 
     const els = {
       timeStatus: document.getElementById('timeStatus'),
@@ -904,7 +1438,35 @@
       totalValue: document.getElementById('totalValue'),
       kineticPct: document.getElementById('kineticPct'),
       potentialPct: document.getElementById('potentialPct'),
-      thermalPct: document.getElementById('thermalPct')
+      thermalPct: document.getElementById('thermalPct'),
+      guideStepCounter: document.getElementById('guideStepCounter'),
+      guideProgress: document.getElementById('guideProgress'),
+      guideTitle: document.getElementById('guideTitle'),
+      guidePrompt: document.getElementById('guidePrompt'),
+      guideSetupNote: document.getElementById('guideSetupNote'),
+      guidePrevButton: document.getElementById('guidePrevButton'),
+      guideApplyButton: document.getElementById('guideApplyButton'),
+      guideCaptureButton: document.getElementById('guideCaptureButton'),
+      guideNextButton: document.getElementById('guideNextButton'),
+      captureDataButton: document.getElementById('captureDataButton'),
+      captureDataButtonPanel: document.getElementById('captureDataButtonPanel'),
+      clearDataButton: document.getElementById('clearDataButton'),
+      observationBody: document.getElementById('observationBody'),
+      dataTableWrap: document.getElementById('dataTableWrap'),
+      dataEmptyState: document.getElementById('dataEmptyState'),
+      learningStatus: document.getElementById('learningStatus'),
+      studentName: document.getElementById('studentName'),
+      studentGroup: document.getElementById('studentGroup'),
+      hypothesisInput: document.getElementById('hypothesisInput'),
+      methodInput: document.getElementById('methodInput'),
+      graphInput: document.getElementById('graphInput'),
+      conclusionInput: document.getElementById('conclusionInput'),
+      transferInput: document.getElementById('transferInput'),
+      checkQuizButton: document.getElementById('checkQuizButton'),
+      quizScore: document.getElementById('quizScore'),
+      generateReportButton: document.getElementById('generateReportButton'),
+      printReportButton: document.getElementById('printReportButton'),
+      reportOutput: document.getElementById('reportOutput')
     };
 
     function clamp(value, min, max) {
@@ -1613,6 +2175,205 @@
       element.style.width = `${clamp((value / max) * 100, 0, 100)}%`;
     }
 
+    function escapeHTML(value) {
+      return String(value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function updateTrackButtons() {
+      document.querySelectorAll('.track-button[data-track]').forEach(button => {
+        button.classList.toggle('active', button.dataset.track === state.track);
+      });
+    }
+
+    function updateGraphModeButtons() {
+      document.querySelectorAll('.mode-button[data-mode]').forEach(button => {
+        button.classList.toggle('active', button.dataset.mode === state.graphMode);
+      });
+    }
+
+    function selectTrack(track, keepPosition = false) {
+      state.track = track;
+      updateTrackButtons();
+      rebuildTrack(keepPosition);
+    }
+
+    function selectGraphMode(mode) {
+      state.graphMode = mode;
+      updateGraphModeButtons();
+    }
+
+    function applyExperimentSetup(setup) {
+      setPlaying(false);
+      state.mass = setup.mass;
+      state.gravity = setup.gravity;
+      state.friction = setup.friction;
+      els.massSlider.value = String(state.mass);
+      els.gravitySlider.value = String(state.gravity);
+      els.frictionSlider.value = String(state.friction);
+      els.massValue.textContent = `${state.mass} kg`;
+      els.gravityValue.innerHTML = `${round(state.gravity, 1)} m/s<sup>2</sup>`;
+      els.frictionValue.textContent = round(state.friction, 3);
+      selectGraphMode(setup.graphMode);
+      selectTrack(setup.track, false);
+      resetSimulation();
+    }
+
+    function updateGuidePanel() {
+      const step = guideSteps[state.guideStep];
+      els.guideStepCounter.textContent = `${state.guideStep + 1}/${guideSteps.length} fasea`;
+      els.guideProgress.style.width = `${((state.guideStep + 1) / guideSteps.length) * 100}%`;
+      els.guideTitle.textContent = step.title;
+      els.guidePrompt.textContent = step.prompt;
+      els.guideSetupNote.textContent = step.note;
+      els.guidePrevButton.disabled = state.guideStep === 0;
+      els.guideNextButton.textContent = state.guideStep === guideSteps.length - 1 ? 'Amaierara' : 'Hurrengoa';
+    }
+
+    function applyGuideStep() {
+      const step = guideSteps[state.guideStep];
+      applyExperimentSetup(step.setup);
+      const target = document.getElementById(step.focus);
+      if (target) {
+        target.focus({ preventScroll: true });
+      }
+      updateGuidePanel();
+    }
+
+    function moveGuide(delta) {
+      state.guideStep = clamp(state.guideStep + delta, 0, guideSteps.length - 1);
+      updateGuidePanel();
+    }
+
+    function captureObservation() {
+      const energy = currentEnergy();
+      const sample = energy.sample;
+      const guide = guideSteps[state.guideStep];
+      state.observations.push({
+        number: state.observations.length + 1,
+        phase: guide.short,
+        track: trackNames[state.track],
+        mass: state.mass,
+        gravity: state.gravity,
+        friction: state.friction,
+        height: sample.h,
+        speed: Math.abs(state.v),
+        kinetic: energy.kinetic,
+        potential: energy.potential,
+        thermal: energy.thermal,
+        total: energy.total
+      });
+      renderObservations();
+      updateLearningStatus();
+    }
+
+    function renderObservations() {
+      els.observationBody.innerHTML = state.observations.map(obs => `
+        <tr>
+          <td>${obs.number}</td>
+          <td>${escapeHTML(obs.phase)} · ${escapeHTML(obs.track)}</td>
+          <td>${obs.mass} kg</td>
+          <td>${round(obs.gravity, 1)}</td>
+          <td>${round(obs.friction, 3)}</td>
+          <td>${round(obs.height, 2)} m</td>
+          <td>${round(obs.speed, 2)} m/s</td>
+          <td>${joules(obs.kinetic)}</td>
+          <td>${joules(obs.potential)}</td>
+          <td>${joules(obs.thermal)}</td>
+          <td>${joules(obs.total)}</td>
+        </tr>
+      `).join('');
+      els.dataTableWrap.style.display = state.observations.length ? '' : 'none';
+      els.dataEmptyState.style.display = state.observations.length ? 'none' : '';
+    }
+
+    function clearObservations() {
+      state.observations = [];
+      renderObservations();
+      updateLearningStatus();
+    }
+
+    function setActiveTab(tabName) {
+      document.querySelectorAll('.tab-button').forEach(button => {
+        button.classList.toggle('active', button.dataset.tab === tabName);
+      });
+      document.querySelectorAll('.tab-panel').forEach(panel => {
+        panel.classList.toggle('active', panel.id === `tab-${tabName}`);
+      });
+    }
+
+    function getSelectedAnswer(name) {
+      const selected = document.querySelector(`input[name="${name}"]:checked`);
+      return selected ? selected.value : '';
+    }
+
+    function checkedAnswerCount() {
+      return quizQuestions.filter(question => getSelectedAnswer(question.name)).length;
+    }
+
+    function checkQuiz(showFeedback = true) {
+      let score = 0;
+      quizQuestions.forEach(question => {
+        const selected = getSelectedAnswer(question.name);
+        const feedback = document.getElementById(`feedback-${question.name}`);
+        const correct = selected === question.correct;
+        if (correct) {
+          score += 1;
+        }
+        if (showFeedback && feedback) {
+          feedback.textContent = selected ? (correct ? question.ok : question.bad) : 'Hautatu erantzun bat.';
+          feedback.className = `feedback ${correct ? 'good' : 'warn'}`;
+        }
+      });
+      state.quizScore = score;
+      els.quizScore.textContent = `${score}/${quizQuestions.length}`;
+      updateLearningStatus();
+      return score;
+    }
+
+    function updateLearningStatus() {
+      els.learningStatus.textContent = `${state.observations.length} datu · ${state.quizScore}/${quizQuestions.length} galdetegi`;
+    }
+
+    function fieldValue(element) {
+      return element.value.trim();
+    }
+
+    function observationReportHTML() {
+      if (!state.observations.length) {
+        return '<p>Ez da neurketarik jaso.</p>';
+      }
+      const items = state.observations.map(obs => (
+        `<li>${obs.number}. ${escapeHTML(obs.phase)}: h=${round(obs.height, 2)} m, v=${round(obs.speed, 2)} m/s, Ez=${joules(obs.kinetic)}, Ep=${joules(obs.potential)}, Et=${joules(obs.thermal)}, guztira=${joules(obs.total)}.</li>`
+      ));
+      return `<ul>${items.join('')}</ul>`;
+    }
+
+    function generateReport() {
+      const answered = checkedAnswerCount();
+      if (answered === quizQuestions.length) {
+        checkQuiz(false);
+      }
+      const today = new Date().toLocaleDateString('eu-ES');
+      els.reportOutput.innerHTML = `
+        <h3>Energia skate-parkean: ikerketa-txostena</h3>
+        <p><strong>Ikaslea:</strong> ${escapeHTML(fieldValue(els.studentName) || 'Izena jarri gabe')} · <strong>Taldea:</strong> ${escapeHTML(fieldValue(els.studentGroup) || 'Taldea jarri gabe')} · <strong>Data:</strong> ${today}</p>
+        <p><strong>Hipotesia:</strong> ${escapeHTML(fieldValue(els.hypothesisInput) || 'Hipotesirik gabe.')}</p>
+        <p><strong>Aldagaiak:</strong> ${escapeHTML(fieldValue(els.methodInput) || 'Ez da prozedurarik azaldu.')}</p>
+        <p><strong>Datu nagusiak:</strong></p>
+        ${observationReportHTML()}
+        <p><strong>Grafikoaren interpretazioa:</strong> ${escapeHTML(fieldValue(els.graphInput) || 'Interpretazioa osatu gabe.')}</p>
+        <p><strong>Ondorioa:</strong> ${escapeHTML(fieldValue(els.conclusionInput) || 'Ondorioa osatu gabe.')}</p>
+        <p><strong>Transferentzia:</strong> ${escapeHTML(fieldValue(els.transferInput) || 'Transferentzia osatu gabe.')}</p>
+        <p><strong>Galdetegia:</strong> ${state.quizScore}/${quizQuestions.length}</p>
+      `;
+      setActiveTab('report');
+    }
+
     function setPlaying(playing) {
       state.playing = playing;
       els.playLabel.textContent = playing ? 'Pausatu' : 'Abiarazi';
@@ -1721,28 +2482,19 @@
       });
       document.getElementById('smoothCustomButton').addEventListener('click', () => {
         state.track = 'custom';
-        document.querySelectorAll('.track-button[data-track]').forEach(button => {
-          button.classList.toggle('active', button.dataset.track === state.track);
-        });
+        updateTrackButtons();
         smoothCustomTrack();
       });
 
       document.querySelectorAll('.track-button[data-track]').forEach(button => {
         button.addEventListener('click', () => {
-          state.track = button.dataset.track;
-          document.querySelectorAll('.track-button[data-track]').forEach(item => {
-            item.classList.toggle('active', item === button);
-          });
-          rebuildTrack(false);
+          selectTrack(button.dataset.track, false);
         });
       });
 
       document.querySelectorAll('.mode-button[data-mode]').forEach(button => {
         button.addEventListener('click', () => {
-          state.graphMode = button.dataset.mode;
-          document.querySelectorAll('.mode-button[data-mode]').forEach(item => {
-            item.classList.toggle('active', item === button);
-          });
+          selectGraphMode(button.dataset.mode);
         });
       });
 
@@ -1783,6 +2535,29 @@
         els.piePanel.style.display = state.showPie ? '' : 'none';
       });
 
+      els.guidePrevButton.addEventListener('click', () => moveGuide(-1));
+      els.guideNextButton.addEventListener('click', () => moveGuide(1));
+      els.guideApplyButton.addEventListener('click', applyGuideStep);
+      els.guideCaptureButton.addEventListener('click', captureObservation);
+      els.captureDataButton.addEventListener('click', captureObservation);
+      els.captureDataButtonPanel.addEventListener('click', captureObservation);
+      els.clearDataButton.addEventListener('click', clearObservations);
+      els.checkQuizButton.addEventListener('click', () => checkQuiz(true));
+      els.generateReportButton.addEventListener('click', generateReport);
+      els.printReportButton.addEventListener('click', () => window.print());
+
+      document.querySelectorAll('.tab-button').forEach(button => {
+        button.addEventListener('click', () => setActiveTab(button.dataset.tab));
+      });
+
+      quizQuestions.forEach(question => {
+        document.querySelectorAll(`input[name="${question.name}"]`).forEach(input => {
+          input.addEventListener('change', () => {
+            els.learningStatus.textContent = `${state.observations.length} datu · ${checkedAnswerCount()}/${quizQuestions.length} erantzun`;
+          });
+        });
+      });
+
       sceneCanvas.addEventListener('pointerdown', startDrag);
       sceneCanvas.addEventListener('pointermove', dragPoint);
       sceneCanvas.addEventListener('pointerup', endDrag);
@@ -1820,6 +2595,9 @@
     resizeCanvas(graphCanvas);
     rebuildTrack(false);
     resetSimulation();
+    updateGuidePanel();
+    renderObservations();
+    updateLearningStatus();
     requestAnimationFrame(frame);
   </script>
 </body>

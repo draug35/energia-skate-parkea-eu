@@ -9,6 +9,7 @@ Euskarazko simulazio interaktibo autonomoa energia mekanikoa lantzeko.
 - Energia zinetiko, potentzial, termiko eta totalaren barrak.
 - Energia-denbora eta energia-posizio grafikoak.
 - Zirkulu-diagrama eta neurketa irakurgarriak.
+- Ikerketa gidatua, fitxa integratua, datu-taula, galdetegia eta txosten-laburpena.
 
 ## Nola erabili
 
