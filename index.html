@@ -1,0 +1,1826 @@
+<!doctype html>
+<html lang="eu">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Energia skate-parkean</title>
+  <style>
+    :root {
+      --ink: #16201f;
+      --muted: #61706d;
+      --line: #d9e1dd;
+      --panel: #ffffff;
+      --page: #f5f7f4;
+      --track: #373f46;
+      --accent: #267c78;
+      --accent-strong: #17615e;
+      --warm: #c36b2b;
+      --kinetic: #2b9c66;
+      --potential: #3977c8;
+      --thermal: #c8443c;
+      --total: #7b56b8;
+      --shadow: 0 12px 30px rgba(31, 48, 45, 0.10);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+      margin: 0;
+      background: var(--page);
+      color: var(--ink);
+    }
+
+    body {
+      overflow-x: hidden;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    .app {
+      min-height: 100dvh;
+      display: grid;
+      grid-template-rows: auto 1fr;
+    }
+
+    .topbar {
+      min-height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.92);
+      position: sticky;
+      top: 0;
+      z-index: 5;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .mark {
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
+      background: #173331;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      box-shadow: inset 0 -8px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    .mark svg {
+      width: 27px;
+      height: 27px;
+      stroke: #f2c166;
+      stroke-width: 2.1;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+    }
+
+    h1 {
+      font-size: 21px;
+      line-height: 1.15;
+      font-weight: 760;
+    }
+
+    .subtitle {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.2;
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .status strong {
+      color: var(--ink);
+      font-weight: 720;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(230px, 286px) minmax(440px, 1fr) minmax(260px, 318px);
+      gap: 14px;
+      padding: 14px;
+      min-height: 0;
+    }
+
+    .panel,
+    .stage {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .panel {
+      min-width: 0;
+      padding: 14px;
+    }
+
+    .stack {
+      display: grid;
+      gap: 14px;
+      align-content: start;
+    }
+
+    .stage {
+      min-width: 0;
+      min-height: 0;
+      display: grid;
+      grid-template-rows: minmax(340px, 1fr) 178px;
+      overflow: hidden;
+    }
+
+    .canvas-wrap {
+      position: relative;
+      min-height: 320px;
+      background:
+        linear-gradient(180deg, #e9f1ef 0%, #f7f5ea 72%, #ece5d6 100%);
+      border-bottom: 1px solid var(--line);
+    }
+
+    #sceneCanvas,
+    #graphCanvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .stage-controls {
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      bottom: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      pointer-events: none;
+    }
+
+    .stage-controls > * {
+      pointer-events: auto;
+    }
+
+    .tool-button,
+    .track-button,
+    .mode-button {
+      min-height: 38px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      border-radius: 7px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 0 12px;
+      cursor: pointer;
+      transition: border-color 140ms ease, background 140ms ease, transform 140ms ease;
+    }
+
+    .tool-button:hover,
+    .track-button:hover,
+    .mode-button:hover {
+      border-color: #aebdb8;
+      background: #f9fbfa;
+    }
+
+    .tool-button:active,
+    .track-button:active,
+    .mode-button:active {
+      transform: translateY(1px);
+    }
+
+    .tool-button.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      min-width: 118px;
+    }
+
+    .tool-button.primary:hover {
+      background: var(--accent-strong);
+      border-color: var(--accent-strong);
+    }
+
+    .tool-button svg,
+    .track-button svg,
+    .mode-button svg {
+      width: 17px;
+      height: 17px;
+      stroke: currentColor;
+      stroke-width: 2;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex: 0 0 auto;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      font-size: 15px;
+      line-height: 1.2;
+      font-weight: 760;
+    }
+
+    h3 {
+      font-size: 13px;
+      line-height: 1.2;
+      font-weight: 720;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .track-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .track-button {
+      min-width: 0;
+      width: 100%;
+      padding: 0 8px;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .track-button.active,
+    .mode-button.active {
+      background: #e7f3f1;
+      border-color: #72aaa5;
+      color: #134d4a;
+      font-weight: 720;
+    }
+
+    .control-group {
+      display: grid;
+      gap: 12px;
+    }
+
+    .range-row {
+      display: grid;
+      gap: 6px;
+    }
+
+    .range-label {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .range-label strong {
+      color: var(--ink);
+      font-weight: 720;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent);
+    }
+
+    .toggles {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 12px;
+    }
+
+    .check {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 30px;
+      font-size: 13px;
+      color: var(--ink);
+    }
+
+    .check input {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--accent);
+      flex: 0 0 auto;
+    }
+
+    .readout-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .readout {
+      min-height: 62px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 9px;
+      background: #fbfcfb;
+    }
+
+    .readout span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.2;
+    }
+
+    .readout strong {
+      display: block;
+      margin-top: 4px;
+      font-size: 20px;
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .bars {
+      display: grid;
+      gap: 9px;
+    }
+
+    .energy-row {
+      display: grid;
+      grid-template-columns: 86px 1fr 68px;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      min-height: 24px;
+    }
+
+    .energy-row label {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .meter {
+      height: 12px;
+      border-radius: 999px;
+      background: #e8edea;
+      overflow: hidden;
+      border: 1px solid #d3ddd8;
+    }
+
+    .fill {
+      height: 100%;
+      width: 0%;
+      border-radius: inherit;
+      transition: width 120ms linear;
+    }
+
+    .fill.kinetic {
+      background: var(--kinetic);
+    }
+
+    .fill.potential {
+      background: var(--potential);
+    }
+
+    .fill.thermal {
+      background: var(--thermal);
+    }
+
+    .fill.total {
+      background: var(--total);
+    }
+
+    .energy-value {
+      text-align: right;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .graph-panel {
+      display: grid;
+      grid-template-rows: auto 1fr;
+      min-height: 0;
+      background: #fff;
+    }
+
+    .graph-toolbar {
+      min-height: 44px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 10px;
+      flex-wrap: wrap;
+    }
+
+    .mode-group,
+    .line-group {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .mode-button {
+      min-height: 30px;
+      font-size: 12px;
+      padding: 0 9px;
+    }
+
+    .line-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .line-pill input {
+      width: 14px;
+      height: 14px;
+      accent-color: var(--accent);
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      display: inline-block;
+      flex: 0 0 auto;
+    }
+
+    .pie-wrap {
+      display: grid;
+      grid-template-columns: 104px 1fr;
+      align-items: center;
+      gap: 10px;
+    }
+
+    #pieCanvas {
+      width: 96px;
+      height: 96px;
+    }
+
+    .legend {
+      display: grid;
+      gap: 7px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .challenge {
+      display: grid;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+
+    .challenge strong {
+      color: var(--ink);
+    }
+
+    @media (max-width: 1120px) {
+      .workspace {
+        grid-template-columns: 248px minmax(390px, 1fr);
+      }
+
+      .right-col {
+        grid-column: 1 / -1;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 820px) {
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .status {
+        white-space: normal;
+      }
+
+      .workspace {
+        grid-template-columns: 1fr;
+        padding: 10px;
+      }
+
+      .stage {
+        grid-template-rows: 380px 210px;
+      }
+
+      .left-col,
+      .right-col {
+        grid-template-columns: 1fr;
+      }
+
+      .track-grid,
+      .toggles,
+      .readout-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .stage {
+        grid-template-rows: 320px 230px;
+      }
+
+      .stage-controls {
+        left: 8px;
+        right: 8px;
+      }
+
+      .tool-button {
+        min-height: 36px;
+        padding: 0 10px;
+      }
+
+      .track-grid,
+      .toggles,
+      .readout-grid,
+      .pie-wrap {
+        grid-template-columns: 1fr;
+      }
+
+      .energy-row {
+        grid-template-columns: 74px 1fr 58px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32">
+            <path d="M4 22 C10 8, 20 30, 28 8"></path>
+            <path d="M9 22 L21 22"></path>
+            <path d="M12 18 L15 13 L19 17"></path>
+            <path d="M15 13 L18 10"></path>
+          </svg>
+        </div>
+        <div>
+          <h1>Energia skate-parkean</h1>
+          <p class="subtitle">Energia zinetikoa, potentziala eta termikoa denbora errealean</p>
+        </div>
+      </div>
+      <div class="status" aria-live="polite">
+        <span>Denbora: <strong id="timeStatus">0.0 s</strong></span>
+        <span>Egoera: <strong id="motionStatus">geldirik</strong></span>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <aside class="stack left-col">
+        <section class="panel">
+          <div class="section-title">
+            <h2>Pista</h2>
+          </div>
+          <div class="track-grid" role="group" aria-label="Pista mota">
+            <button class="track-button active" type="button" data-track="u">
+              <svg viewBox="0 0 24 24"><path d="M3 5 C8 21, 16 21, 21 5"></path></svg>
+              U-pista
+            </button>
+            <button class="track-button" type="button" data-track="ramp">
+              <svg viewBox="0 0 24 24"><path d="M3 19 L21 6"></path><path d="M3 19 H21"></path></svg>
+              Arrapala
+            </button>
+            <button class="track-button" type="button" data-track="double">
+              <svg viewBox="0 0 24 24"><path d="M3 7 C6 19, 9 19, 12 8 C15 19, 18 19, 21 7"></path></svg>
+              Bi putzu
+            </button>
+            <button class="track-button" type="button" data-track="loop">
+              <svg viewBox="0 0 24 24"><path d="M3 18 C7 5, 13 5, 13 13 C13 19, 6 19, 10 10 C13 4, 20 5, 21 16"></path></svg>
+              Loop-a
+            </button>
+            <button class="track-button" type="button" data-track="custom">
+              <svg viewBox="0 0 24 24"><path d="M4 17 C8 5, 13 20, 20 7"></path><path d="M4 17 h.01"></path><path d="M12 12 h.01"></path><path d="M20 7 h.01"></path></svg>
+              Pertsonala
+            </button>
+            <button class="track-button" type="button" id="smoothCustomButton">
+              <svg viewBox="0 0 24 24"><path d="M4 4 v6 h6"></path><path d="M20 20 v-6 h-6"></path><path d="M5 10 A8 8 0 0 1 18 6"></path><path d="M19 14 A8 8 0 0 1 6 18"></path></svg>
+              Leundu
+            </button>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="section-title">
+            <h2>Esperimentua</h2>
+          </div>
+          <div class="control-group">
+            <div class="range-row">
+              <div class="range-label">
+                <span>Masa</span>
+                <strong id="massValue">55 kg</strong>
+              </div>
+              <input id="massSlider" type="range" min="25" max="100" value="55" step="1">
+            </div>
+            <div class="range-row">
+              <div class="range-label">
+                <span>Grabitatea</span>
+                <strong id="gravityValue">9.8 m/s<sup>2</sup></strong>
+              </div>
+              <input id="gravitySlider" type="range" min="1.6" max="24.8" value="9.8" step="0.1">
+            </div>
+            <div class="range-row">
+              <div class="range-label">
+                <span>Marruskadura</span>
+                <strong id="frictionValue">0.00</strong>
+              </div>
+              <input id="frictionSlider" type="range" min="0" max="0.12" value="0" step="0.005">
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="section-title">
+            <h2>Ikuspegia</h2>
+          </div>
+          <div class="toggles">
+            <label class="check"><input id="gridToggle" type="checkbox" checked> Sareta</label>
+            <label class="check"><input id="pathToggle" type="checkbox" checked> Ibilbidea</label>
+            <label class="check"><input id="speedToggle" type="checkbox" checked> Abiadura</label>
+            <label class="check"><input id="pieToggle" type="checkbox" checked> Zirkulua</label>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="section-title">
+            <h2>Erronka azkarra</h2>
+          </div>
+          <div class="challenge">
+            <p><strong>1.</strong> Masa bikoiztuta, abiadura maximoa aldatzen da?</p>
+            <p><strong>2.</strong> Marruskadurarekin, nora doa energia mekanikoaren zati bat?</p>
+            <p><strong>3.</strong> Loop-a osatzeko, zein hasierako altuera behar du patinatzaileak?</p>
+          </div>
+        </section>
+      </aside>
+
+      <section class="stage" aria-label="Simulazioa">
+        <div class="canvas-wrap">
+          <canvas id="sceneCanvas"></canvas>
+          <div class="stage-controls">
+            <button class="tool-button primary" type="button" id="playButton">
+              <svg viewBox="0 0 24 24" id="playIcon"><path d="M8 5 L19 12 L8 19 Z"></path></svg>
+              <span id="playLabel">Abiarazi</span>
+            </button>
+            <button class="tool-button" type="button" id="resetButton">
+              <svg viewBox="0 0 24 24"><path d="M3 12 A9 9 0 1 0 6 5"></path><path d="M3 5 v7 h7"></path></svg>
+              Berrabiarazi
+            </button>
+            <button class="tool-button" type="button" id="groundButton">
+              <svg viewBox="0 0 24 24"><path d="M4 19 H20"></path><path d="M8 15 L12 19 L16 15"></path><path d="M12 5 V19"></path></svg>
+              Lurrera
+            </button>
+            <button class="tool-button" type="button" id="clearHeatButton">
+              <svg viewBox="0 0 24 24"><path d="M4 7 H20"></path><path d="M10 11 v6"></path><path d="M14 11 v6"></path><path d="M6 7 l1 14 h10 l1-14"></path><path d="M9 7 V4 h6 v3"></path></svg>
+              Termikoa garbitu
+            </button>
+          </div>
+        </div>
+        <div class="graph-panel">
+          <div class="graph-toolbar">
+            <div class="mode-group" role="group" aria-label="Grafikoaren ardatza">
+              <button class="mode-button active" type="button" data-mode="time">Denbora</button>
+              <button class="mode-button" type="button" data-mode="position">Posizioa</button>
+              <button class="mode-button" type="button" id="clearGraphButton">
+                <svg viewBox="0 0 24 24"><path d="M3 6 h18"></path><path d="M8 6 V4 h8 v2"></path><path d="M6 6 l1 16 h10 l1-16"></path></svg>
+                Garbitu
+              </button>
+            </div>
+            <div class="line-group">
+              <label class="line-pill"><input type="checkbox" data-line="kinetic" checked><span class="dot" style="background: var(--kinetic)"></span>Zin.</label>
+              <label class="line-pill"><input type="checkbox" data-line="potential" checked><span class="dot" style="background: var(--potential)"></span>Pot.</label>
+              <label class="line-pill"><input type="checkbox" data-line="thermal" checked><span class="dot" style="background: var(--thermal)"></span>Term.</label>
+              <label class="line-pill"><input type="checkbox" data-line="total" checked><span class="dot" style="background: var(--total)"></span>Guzt.</label>
+            </div>
+          </div>
+          <canvas id="graphCanvas"></canvas>
+        </div>
+      </section>
+
+      <aside class="stack right-col">
+        <section class="panel">
+          <div class="section-title">
+            <h2>Neurketak</h2>
+          </div>
+          <div class="readout-grid">
+            <div class="readout">
+              <span>Altuera</span>
+              <strong id="heightReadout">0.00 m</strong>
+            </div>
+            <div class="readout">
+              <span>Abiadura</span>
+              <strong id="speedReadout">0.00 m/s</strong>
+            </div>
+            <div class="readout">
+              <span>Posizioa</span>
+              <strong id="positionReadout">0%</strong>
+            </div>
+            <div class="readout">
+              <span>Azelerazioa</span>
+              <strong id="accelReadout">0.00 m/s<sup>2</sup></strong>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="section-title">
+            <h2>Energia</h2>
+          </div>
+          <div class="bars">
+            <div class="energy-row">
+              <label>Zinetikoa</label>
+              <div class="meter"><div class="fill kinetic" id="kineticBar"></div></div>
+              <div class="energy-value" id="kineticValue">0 J</div>
+            </div>
+            <div class="energy-row">
+              <label>Potentziala</label>
+              <div class="meter"><div class="fill potential" id="potentialBar"></div></div>
+              <div class="energy-value" id="potentialValue">0 J</div>
+            </div>
+            <div class="energy-row">
+              <label>Termikoa</label>
+              <div class="meter"><div class="fill thermal" id="thermalBar"></div></div>
+              <div class="energy-value" id="thermalValue">0 J</div>
+            </div>
+            <div class="energy-row">
+              <label>Guztira</label>
+              <div class="meter"><div class="fill total" id="totalBar"></div></div>
+              <div class="energy-value" id="totalValue">0 J</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" id="piePanel">
+          <div class="section-title">
+            <h2>Banaketa</h2>
+          </div>
+          <div class="pie-wrap">
+            <canvas id="pieCanvas" width="96" height="96"></canvas>
+            <div class="legend">
+              <div class="legend-item"><span><span class="dot" style="background: var(--kinetic)"></span> Zinetikoa</span><strong id="kineticPct">0%</strong></div>
+              <div class="legend-item"><span><span class="dot" style="background: var(--potential)"></span> Potentziala</span><strong id="potentialPct">0%</strong></div>
+              <div class="legend-item"><span><span class="dot" style="background: var(--thermal)"></span> Termikoa</span><strong id="thermalPct">0%</strong></div>
+            </div>
+          </div>
+        </section>
+      </aside>
+    </main>
+  </div>
+
+  <script>
+    const sceneCanvas = document.getElementById('sceneCanvas');
+    const graphCanvas = document.getElementById('graphCanvas');
+    const pieCanvas = document.getElementById('pieCanvas');
+    const sceneCtx = sceneCanvas.getContext('2d');
+    const graphCtx = graphCanvas.getContext('2d');
+    const pieCtx = pieCanvas.getContext('2d');
+
+    const WORLD_WIDTH = 12;
+    const WORLD_HEIGHT = 5.6;
+    const MAX_GRAPH_POINTS = 720;
+
+    const colors = {
+      kinetic: '#2b9c66',
+      potential: '#3977c8',
+      thermal: '#c8443c',
+      total: '#7b56b8'
+    };
+
+    const state = {
+      playing: false,
+      track: 'u',
+      mass: 55,
+      gravity: 9.8,
+      friction: 0,
+      s: 0,
+      v: 0,
+      time: 0,
+      lastTimestamp: 0,
+      acceleration: 0,
+      thermal: 0,
+      graphMode: 'time',
+      graphLines: {
+        kinetic: true,
+        potential: true,
+        thermal: true,
+        total: true
+      },
+      showGrid: true,
+      showPath: true,
+      showSpeed: true,
+      showPie: true,
+      graphData: [],
+      pathDots: [],
+      pathClock: 0,
+      samples: [],
+      draggingIndex: -1,
+      layout: null,
+      customPoints: [
+        { x: 0.08, h: 4.45 },
+        { x: 0.26, h: 1.15 },
+        { x: 0.48, h: 3.55 },
+        { x: 0.70, h: 0.95 },
+        { x: 0.92, h: 3.95 }
+      ]
+    };
+
+    const els = {
+      timeStatus: document.getElementById('timeStatus'),
+      motionStatus: document.getElementById('motionStatus'),
+      playButton: document.getElementById('playButton'),
+      playIcon: document.getElementById('playIcon'),
+      playLabel: document.getElementById('playLabel'),
+      massSlider: document.getElementById('massSlider'),
+      gravitySlider: document.getElementById('gravitySlider'),
+      frictionSlider: document.getElementById('frictionSlider'),
+      massValue: document.getElementById('massValue'),
+      gravityValue: document.getElementById('gravityValue'),
+      frictionValue: document.getElementById('frictionValue'),
+      gridToggle: document.getElementById('gridToggle'),
+      pathToggle: document.getElementById('pathToggle'),
+      speedToggle: document.getElementById('speedToggle'),
+      pieToggle: document.getElementById('pieToggle'),
+      piePanel: document.getElementById('piePanel'),
+      heightReadout: document.getElementById('heightReadout'),
+      speedReadout: document.getElementById('speedReadout'),
+      positionReadout: document.getElementById('positionReadout'),
+      accelReadout: document.getElementById('accelReadout'),
+      kineticBar: document.getElementById('kineticBar'),
+      potentialBar: document.getElementById('potentialBar'),
+      thermalBar: document.getElementById('thermalBar'),
+      totalBar: document.getElementById('totalBar'),
+      kineticValue: document.getElementById('kineticValue'),
+      potentialValue: document.getElementById('potentialValue'),
+      thermalValue: document.getElementById('thermalValue'),
+      totalValue: document.getElementById('totalValue'),
+      kineticPct: document.getElementById('kineticPct'),
+      potentialPct: document.getElementById('potentialPct'),
+      thermalPct: document.getElementById('thermalPct')
+    };
+
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+    function round(value, digits = 1) {
+      return Number(value).toFixed(digits);
+    }
+
+    function joules(value) {
+      if (value >= 1000) {
+        return `${round(value / 1000, 1)} kJ`;
+      }
+      return `${Math.round(value)} J`;
+    }
+
+    function resizeCanvas(canvas) {
+      const rect = canvas.getBoundingClientRect();
+      const ratio = window.devicePixelRatio || 1;
+      const width = Math.max(1, Math.floor(rect.width * ratio));
+      const height = Math.max(1, Math.floor(rect.height * ratio));
+      if (canvas.width !== width || canvas.height !== height) {
+        canvas.width = width;
+        canvas.height = height;
+      }
+    }
+
+    function getLayout() {
+      const w = sceneCanvas.width;
+      const h = sceneCanvas.height;
+      const left = Math.max(26, w * 0.045);
+      const right = Math.max(22, w * 0.035);
+      const top = Math.max(22, h * 0.05);
+      const ground = h - Math.max(44, h * 0.11);
+      const heightScale = (ground - top) / WORLD_HEIGHT;
+      return { w, h, left, right, top, ground, heightScale };
+    }
+
+    function toScreen(point) {
+      const layout = state.layout || getLayout();
+      const usable = layout.w - layout.left - layout.right;
+      return {
+        x: layout.left + point.x * usable,
+        y: layout.ground - point.h * layout.heightScale
+      };
+    }
+
+    function fromScreen(x, y) {
+      const layout = state.layout || getLayout();
+      const usable = layout.w - layout.left - layout.right;
+      return {
+        x: clamp((x - layout.left) / usable, 0.04, 0.96),
+        h: clamp((layout.ground - y) / layout.heightScale, 0.25, 5.25)
+      };
+    }
+
+    function buildTrackSamples(type) {
+      const raw = [];
+      const steps = type === 'loop' ? 760 : 620;
+
+      if (type === 'custom') {
+        const points = state.customPoints;
+        for (let i = 0; i < points.length - 1; i++) {
+          const p0 = points[Math.max(0, i - 1)];
+          const p1 = points[i];
+          const p2 = points[i + 1];
+          const p3 = points[Math.min(points.length - 1, i + 2)];
+          const segmentSteps = Math.ceil(steps / (points.length - 1));
+          for (let j = 0; j < segmentSteps; j++) {
+            const u = j / segmentSteps;
+            const u2 = u * u;
+            const u3 = u2 * u;
+            const h = 0.5 * (
+              (2 * p1.h) +
+              (-p0.h + p2.h) * u +
+              (2 * p0.h - 5 * p1.h + 4 * p2.h - p3.h) * u2 +
+              (-p0.h + 3 * p1.h - 3 * p2.h + p3.h) * u3
+            );
+            raw.push({
+              x: p1.x + (p2.x - p1.x) * u,
+              h: clamp(h, 0.25, 5.3)
+            });
+          }
+        }
+        raw.push(points[points.length - 1]);
+      } else if (type === 'ramp') {
+        for (let i = 0; i <= steps; i++) {
+          const t = i / steps;
+          raw.push({
+            x: 0.08 + 0.84 * t,
+            h: 4.85 - 3.8 * t
+          });
+        }
+      } else if (type === 'double') {
+        for (let i = 0; i <= steps; i++) {
+          const t = i / steps;
+          const wells = Math.pow(Math.cos(2 * Math.PI * t), 2);
+          const centerHill = Math.exp(-Math.pow((t - 0.5) / 0.12, 2));
+          raw.push({
+            x: 0.07 + 0.86 * t,
+            h: 0.82 + 3.2 * wells + 0.85 * centerHill
+          });
+        }
+      } else if (type === 'loop') {
+        const loopRaw = [];
+        for (let i = 0; i <= 160; i++) {
+          const u = i / 160;
+          loopRaw.push({
+            x: 0.08 + 0.47 * u,
+            h: 4.95 - 3.65 * u
+          });
+        }
+        for (let i = 1; i <= 430; i++) {
+          const u = i / 430;
+          const angle = -Math.PI / 2 - 2 * Math.PI * u;
+          loopRaw.push({
+            x: 0.55 + 0.17 * Math.cos(angle),
+            h: 2.40 + 1.10 * Math.sin(angle)
+          });
+        }
+        for (let i = 1; i <= 170; i++) {
+          const u = i / 170;
+          loopRaw.push({
+            x: 0.55 + 0.38 * u,
+            h: 1.30 + 0.32 * u
+          });
+        }
+        raw.push(...loopRaw);
+      } else {
+        for (let i = 0; i <= steps; i++) {
+          const t = i / steps;
+          raw.push({
+            x: 0.08 + 0.84 * t,
+            h: 0.78 + 4.15 * Math.pow(2 * t - 1, 2)
+          });
+        }
+      }
+
+      let cumulative = 0;
+      const samples = raw.map((point, index) => {
+        if (index > 0) {
+          const prev = raw[index - 1];
+          const dx = (point.x - prev.x) * WORLD_WIDTH;
+          const dh = point.h - prev.h;
+          cumulative += Math.hypot(dx, dh);
+        }
+        return { ...point, s: cumulative, dhds: 0 };
+      });
+
+      for (let i = 0; i < samples.length; i++) {
+        const before = samples[Math.max(0, i - 2)];
+        const after = samples[Math.min(samples.length - 1, i + 2)];
+        const ds = Math.max(0.0001, after.s - before.s);
+        samples[i].dhds = (after.h - before.h) / ds;
+      }
+
+      return samples;
+    }
+
+    function rebuildTrack(keepPosition = false) {
+      const oldRatio = getTrackRatio();
+      state.samples = buildTrackSamples(state.track);
+      if (keepPosition) {
+        state.s = oldRatio * getTrackLength();
+      } else {
+        state.s = 0;
+        state.v = 0;
+        state.thermal = 0;
+        state.time = 0;
+        state.graphData = [];
+        state.pathDots = [];
+      }
+      state.s = clamp(state.s, 0, getTrackLength());
+      recordPoint();
+      updateReadouts();
+    }
+
+    function getTrackLength() {
+      if (!state.samples.length) {
+        return 1;
+      }
+      return state.samples[state.samples.length - 1].s;
+    }
+
+    function getTrackRatio() {
+      return clamp(state.s / getTrackLength(), 0, 1);
+    }
+
+    function sampleAtS(s) {
+      const samples = state.samples;
+      if (!samples.length) {
+        return { x: 0, h: 0, s: 0, dhds: 0 };
+      }
+      const length = getTrackLength();
+      s = clamp(s, 0, length);
+      let low = 0;
+      let high = samples.length - 1;
+      while (low < high) {
+        const mid = Math.floor((low + high) / 2);
+        if (samples[mid].s < s) {
+          low = mid + 1;
+        } else {
+          high = mid;
+        }
+      }
+      const next = samples[low];
+      const prev = samples[Math.max(0, low - 1)];
+      const span = Math.max(0.0001, next.s - prev.s);
+      const t = clamp((s - prev.s) / span, 0, 1);
+      return {
+        x: prev.x + (next.x - prev.x) * t,
+        h: prev.h + (next.h - prev.h) * t,
+        s,
+        dhds: prev.dhds + (next.dhds - prev.dhds) * t
+      };
+    }
+
+    function currentEnergy() {
+      const sample = sampleAtS(state.s);
+      const kinetic = 0.5 * state.mass * state.v * state.v;
+      const potential = state.mass * state.gravity * Math.max(0, sample.h);
+      const thermal = Math.max(0, state.thermal);
+      return {
+        kinetic,
+        potential,
+        thermal,
+        total: kinetic + potential + thermal,
+        sample
+      };
+    }
+
+    function simulate(dt) {
+      const maxStep = 1 / 120;
+      let remaining = Math.min(dt, 0.08);
+      while (remaining > 0) {
+        const step = Math.min(maxStep, remaining);
+        const beforeS = state.s;
+        const sample = sampleAtS(state.s);
+        const gravityAccel = -state.gravity * sample.dhds;
+        const frictionAccel = state.friction * state.gravity * 2.8;
+        let accel = gravityAccel;
+
+        if (Math.abs(state.v) > 0.025) {
+          accel -= Math.sign(state.v) * frictionAccel;
+        } else if (Math.abs(gravityAccel) <= frictionAccel) {
+          accel = 0;
+          state.v = 0;
+        } else {
+          accel -= Math.sign(gravityAccel) * frictionAccel;
+        }
+
+        state.v += accel * step;
+        state.s += state.v * step;
+
+        const length = getTrackLength();
+        if (state.s < 0) {
+          state.s = 0;
+          state.v = Math.abs(state.v) * 0.18;
+        } else if (state.s > length) {
+          state.s = length;
+          state.v = -Math.abs(state.v) * 0.18;
+        }
+
+        const ds = Math.abs(state.s - beforeS);
+        state.thermal += state.mass * frictionAccel * ds;
+        state.acceleration = accel;
+        state.time += step;
+        state.pathClock += step;
+        remaining -= step;
+      }
+
+      if (state.pathClock > 0.14) {
+        recordPoint();
+        state.pathClock = 0;
+      }
+      pushGraphSample();
+    }
+
+    function recordPoint() {
+      if (!state.showPath) {
+        return;
+      }
+      const sample = sampleAtS(state.s);
+      state.pathDots.push({ x: sample.x, h: sample.h, age: 0 });
+      if (state.pathDots.length > 160) {
+        state.pathDots.shift();
+      }
+    }
+
+    function pushGraphSample() {
+      const energy = currentEnergy();
+      state.graphData.push({
+        t: state.time,
+        pos: getTrackRatio(),
+        kinetic: energy.kinetic,
+        potential: energy.potential,
+        thermal: energy.thermal,
+        total: energy.total
+      });
+      if (state.graphData.length > MAX_GRAPH_POINTS) {
+        state.graphData.shift();
+      }
+    }
+
+    function drawScene() {
+      state.layout = getLayout();
+      const ctx = sceneCtx;
+      const { w, h, ground, heightScale, top } = state.layout;
+      ctx.clearRect(0, 0, w, h);
+
+      const sky = ctx.createLinearGradient(0, 0, 0, h);
+      sky.addColorStop(0, '#e7f2f1');
+      sky.addColorStop(0.72, '#f6f3e7');
+      sky.addColorStop(1, '#e9dfcf');
+      ctx.fillStyle = sky;
+      ctx.fillRect(0, 0, w, h);
+
+      if (state.showGrid) {
+        ctx.save();
+        ctx.strokeStyle = 'rgba(60, 79, 75, 0.16)';
+        ctx.lineWidth = 1;
+        const usable = w - state.layout.left - state.layout.right;
+        for (let meter = 0; meter <= WORLD_WIDTH; meter += 1) {
+          const x = state.layout.left + (meter / WORLD_WIDTH) * usable;
+          ctx.beginPath();
+          ctx.moveTo(x, top);
+          ctx.lineTo(x, ground);
+          ctx.stroke();
+        }
+        for (let meter = 0; meter <= WORLD_HEIGHT; meter += 1) {
+          const y = ground - meter * heightScale;
+          ctx.beginPath();
+          ctx.moveTo(state.layout.left, y);
+          ctx.lineTo(w - state.layout.right, y);
+          ctx.stroke();
+          ctx.fillStyle = 'rgba(37, 49, 47, 0.50)';
+          ctx.font = `${Math.max(11, w * 0.012)}px sans-serif`;
+          ctx.fillText(`${meter} m`, state.layout.left + 4, y - 4);
+        }
+        ctx.restore();
+      }
+
+      ctx.save();
+      ctx.fillStyle = '#d8cdb5';
+      ctx.fillRect(0, ground, w, h - ground);
+      ctx.strokeStyle = '#927e60';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(0, ground);
+      ctx.lineTo(w, ground);
+      ctx.stroke();
+      ctx.restore();
+
+      drawPathDots(ctx);
+      drawTrack(ctx);
+      if (state.track === 'custom') {
+        drawControlPoints(ctx);
+      }
+      drawSkater(ctx);
+      if (state.showSpeed) {
+        drawSpeedBadge(ctx);
+      }
+    }
+
+    function drawTrack(ctx) {
+      if (!state.samples.length) {
+        return;
+      }
+      ctx.save();
+      ctx.lineJoin = 'round';
+      ctx.lineCap = 'round';
+
+      ctx.strokeStyle = 'rgba(20, 28, 29, 0.18)';
+      ctx.lineWidth = 16;
+      ctx.beginPath();
+      state.samples.forEach((sample, index) => {
+        const point = toScreen(sample);
+        if (index === 0) {
+          ctx.moveTo(point.x, point.y + 4);
+        } else {
+          ctx.lineTo(point.x, point.y + 4);
+        }
+      });
+      ctx.stroke();
+
+      ctx.strokeStyle = '#343d43';
+      ctx.lineWidth = 9;
+      ctx.beginPath();
+      state.samples.forEach((sample, index) => {
+        const point = toScreen(sample);
+        if (index === 0) {
+          ctx.moveTo(point.x, point.y);
+        } else {
+          ctx.lineTo(point.x, point.y);
+        }
+      });
+      ctx.stroke();
+
+      ctx.strokeStyle = '#d8e0df';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      state.samples.forEach((sample, index) => {
+        const point = toScreen(sample);
+        if (index === 0) {
+          ctx.moveTo(point.x, point.y - 1);
+        } else {
+          ctx.lineTo(point.x, point.y - 1);
+        }
+      });
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawPathDots(ctx) {
+      if (!state.showPath) {
+        return;
+      }
+      ctx.save();
+      for (let i = 0; i < state.pathDots.length; i++) {
+        const dot = state.pathDots[i];
+        const point = toScreen(dot);
+        const alpha = 0.18 + (i / Math.max(1, state.pathDots.length)) * 0.52;
+        ctx.fillStyle = `rgba(38, 124, 120, ${alpha})`;
+        ctx.beginPath();
+        ctx.arc(point.x, point.y, 3, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+
+    function drawControlPoints(ctx) {
+      ctx.save();
+      state.customPoints.forEach((point, index) => {
+        const screen = toScreen(point);
+        ctx.fillStyle = index === state.draggingIndex ? '#f0b84f' : '#ffffff';
+        ctx.strokeStyle = '#17615e';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(screen.x, screen.y, 8, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+      });
+      ctx.restore();
+    }
+
+    function drawSkater(ctx) {
+      const sample = sampleAtS(state.s);
+      const near = sampleAtS(clamp(state.s + 0.05, 0, getTrackLength()));
+      const far = sampleAtS(clamp(state.s - 0.05, 0, getTrackLength()));
+      const current = toScreen(sample);
+      const a = toScreen(far);
+      const b = toScreen(near);
+      const angle = Math.atan2(b.y - a.y, b.x - a.x);
+
+      ctx.save();
+      ctx.translate(current.x, current.y - 11);
+      ctx.rotate(angle);
+
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.18)';
+      ctx.beginPath();
+      ctx.ellipse(0, 24, 23, 6, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = '#f2c166';
+      roundRect(ctx, -24, 9, 48, 8, 4);
+      ctx.fill();
+      ctx.strokeStyle = '#533f1d';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      ctx.fillStyle = '#293642';
+      ctx.beginPath();
+      ctx.arc(-15, 19, 4, 0, Math.PI * 2);
+      ctx.arc(15, 19, 4, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.rotate(-angle * 0.4);
+      ctx.strokeStyle = '#1f2b2d';
+      ctx.lineWidth = 4;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(-4, 4);
+      ctx.lineTo(3, -13);
+      ctx.lineTo(10, 2);
+      ctx.moveTo(1, -4);
+      ctx.lineTo(-13, 3);
+      ctx.moveTo(3, -13);
+      ctx.lineTo(15, -17);
+      ctx.stroke();
+
+      ctx.fillStyle = '#e9a987';
+      ctx.beginPath();
+      ctx.arc(4, -21, 7, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function drawSpeedBadge(ctx) {
+      const energy = currentEnergy();
+      const w = sceneCanvas.width;
+      const x = w - 170;
+      const y = 16;
+      ctx.save();
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.92)';
+      ctx.strokeStyle = 'rgba(97, 112, 109, 0.32)';
+      ctx.lineWidth = 1;
+      roundRect(ctx, x, y, 154, 54, 8);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = '#61706d';
+      ctx.font = '12px sans-serif';
+      ctx.fillText('Abiadura', x + 12, y + 19);
+      ctx.fillStyle = '#16201f';
+      ctx.font = 'bold 22px sans-serif';
+      ctx.fillText(`${round(Math.abs(state.v), 2)} m/s`, x + 12, y + 43);
+      ctx.strokeStyle = colors.kinetic;
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(x + 115, y + 42);
+      ctx.lineTo(x + 115 + clamp(energy.kinetic / 160, 0, 26), y + 42);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function roundRect(ctx, x, y, width, height, radius) {
+      const r = Math.min(radius, width / 2, height / 2);
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.lineTo(x + width - r, y);
+      ctx.quadraticCurveTo(x + width, y, x + width, y + r);
+      ctx.lineTo(x + width, y + height - r);
+      ctx.quadraticCurveTo(x + width, y + height, x + width - r, y + height);
+      ctx.lineTo(x + r, y + height);
+      ctx.quadraticCurveTo(x, y + height, x, y + height - r);
+      ctx.lineTo(x, y + r);
+      ctx.quadraticCurveTo(x, y, x + r, y);
+    }
+
+    function drawGraph() {
+      const ctx = graphCtx;
+      const w = graphCanvas.width;
+      const h = graphCanvas.height;
+      ctx.clearRect(0, 0, w, h);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, w, h);
+
+      const pad = {
+        left: 48,
+        right: 18,
+        top: 16,
+        bottom: 30
+      };
+      const plotW = Math.max(1, w - pad.left - pad.right);
+      const plotH = Math.max(1, h - pad.top - pad.bottom);
+      const data = state.graphData.length ? state.graphData : [currentGraphPoint()];
+      const visible = state.graphMode === 'time' ? data.filter(point => point.t >= Math.max(0, state.time - 18)) : data;
+      const maxEnergy = Math.max(120, ...visible.map(point => point.total)) * 1.08;
+
+      ctx.save();
+      ctx.strokeStyle = '#e0e7e4';
+      ctx.lineWidth = 1;
+      ctx.fillStyle = '#61706d';
+      ctx.font = '12px sans-serif';
+      for (let i = 0; i <= 4; i++) {
+        const y = pad.top + plotH * (i / 4);
+        ctx.beginPath();
+        ctx.moveTo(pad.left, y);
+        ctx.lineTo(w - pad.right, y);
+        ctx.stroke();
+        const value = maxEnergy * (1 - i / 4);
+        ctx.fillText(joules(value), 8, y + 4);
+      }
+
+      for (let i = 0; i <= 5; i++) {
+        const x = pad.left + plotW * (i / 5);
+        ctx.beginPath();
+        ctx.moveTo(x, pad.top);
+        ctx.lineTo(x, h - pad.bottom);
+        ctx.stroke();
+      }
+
+      ctx.strokeStyle = '#9eadab';
+      ctx.beginPath();
+      ctx.moveTo(pad.left, pad.top);
+      ctx.lineTo(pad.left, h - pad.bottom);
+      ctx.lineTo(w - pad.right, h - pad.bottom);
+      ctx.stroke();
+
+      const startTime = state.graphMode === 'time' ? Math.max(0, state.time - 18) : 0;
+      const endTime = state.graphMode === 'time' ? Math.max(18, state.time) : 1;
+
+      function xFor(point) {
+        if (state.graphMode === 'position') {
+          return pad.left + point.pos * plotW;
+        }
+        return pad.left + clamp((point.t - startTime) / Math.max(1, endTime - startTime), 0, 1) * plotW;
+      }
+
+      function yFor(value) {
+        return pad.top + (1 - clamp(value / maxEnergy, 0, 1)) * plotH;
+      }
+
+      for (const key of ['kinetic', 'potential', 'thermal', 'total']) {
+        if (!state.graphLines[key]) {
+          continue;
+        }
+        ctx.strokeStyle = colors[key];
+        ctx.lineWidth = key === 'total' ? 3 : 2;
+        ctx.beginPath();
+        visible.forEach((point, index) => {
+          const x = xFor(point);
+          const y = yFor(point[key]);
+          if (index === 0) {
+            ctx.moveTo(x, y);
+          } else {
+            ctx.lineTo(x, y);
+          }
+        });
+        ctx.stroke();
+      }
+
+      ctx.fillStyle = '#61706d';
+      ctx.font = '12px sans-serif';
+      const axis = state.graphMode === 'time' ? 't (s)' : 'posizioa';
+      ctx.fillText(axis, w - pad.right - 52, h - 8);
+      ctx.restore();
+    }
+
+    function currentGraphPoint() {
+      const energy = currentEnergy();
+      return {
+        t: state.time,
+        pos: getTrackRatio(),
+        kinetic: energy.kinetic,
+        potential: energy.potential,
+        thermal: energy.thermal,
+        total: energy.total
+      };
+    }
+
+    function drawPie(energy) {
+      const ctx = pieCtx;
+      const w = pieCanvas.width;
+      const h = pieCanvas.height;
+      ctx.clearRect(0, 0, w, h);
+      const values = [
+        ['kinetic', energy.kinetic],
+        ['potential', energy.potential],
+        ['thermal', energy.thermal]
+      ];
+      const total = Math.max(0.001, values.reduce((sum, item) => sum + item[1], 0));
+      let angle = -Math.PI / 2;
+      ctx.save();
+      values.forEach(([key, value]) => {
+        const slice = (value / total) * Math.PI * 2;
+        ctx.beginPath();
+        ctx.moveTo(w / 2, h / 2);
+        ctx.arc(w / 2, h / 2, 42, angle, angle + slice);
+        ctx.closePath();
+        ctx.fillStyle = colors[key];
+        ctx.fill();
+        angle += slice;
+      });
+      ctx.beginPath();
+      ctx.arc(w / 2, h / 2, 21, 0, Math.PI * 2);
+      ctx.fillStyle = '#ffffff';
+      ctx.fill();
+      ctx.strokeStyle = '#d9e1dd';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(w / 2, h / 2, 42, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function updateReadouts() {
+      const energy = currentEnergy();
+      const sample = energy.sample;
+      const maxEnergy = Math.max(100, energy.total, state.mass * state.gravity * 5.2);
+      const distributionTotal = Math.max(0.001, energy.kinetic + energy.potential + energy.thermal);
+
+      els.timeStatus.textContent = `${round(state.time, 1)} s`;
+      els.motionStatus.textContent = Math.abs(state.v) > 0.05 ? 'mugitzen' : 'geldirik';
+      els.heightReadout.textContent = `${round(sample.h, 2)} m`;
+      els.speedReadout.textContent = `${round(Math.abs(state.v), 2)} m/s`;
+      els.positionReadout.textContent = `${Math.round(getTrackRatio() * 100)}%`;
+      els.accelReadout.innerHTML = `${round(state.acceleration, 2)} m/s<sup>2</sup>`;
+
+      setBar(els.kineticBar, energy.kinetic, maxEnergy);
+      setBar(els.potentialBar, energy.potential, maxEnergy);
+      setBar(els.thermalBar, energy.thermal, maxEnergy);
+      setBar(els.totalBar, energy.total, maxEnergy);
+      els.kineticValue.textContent = joules(energy.kinetic);
+      els.potentialValue.textContent = joules(energy.potential);
+      els.thermalValue.textContent = joules(energy.thermal);
+      els.totalValue.textContent = joules(energy.total);
+
+      els.kineticPct.textContent = `${Math.round((energy.kinetic / distributionTotal) * 100)}%`;
+      els.potentialPct.textContent = `${Math.round((energy.potential / distributionTotal) * 100)}%`;
+      els.thermalPct.textContent = `${Math.round((energy.thermal / distributionTotal) * 100)}%`;
+      drawPie(energy);
+    }
+
+    function setBar(element, value, max) {
+      element.style.width = `${clamp((value / max) * 100, 0, 100)}%`;
+    }
+
+    function setPlaying(playing) {
+      state.playing = playing;
+      els.playLabel.textContent = playing ? 'Pausatu' : 'Abiarazi';
+      els.playIcon.innerHTML = playing ? '<path d="M8 5 v14"></path><path d="M16 5 v14"></path>' : '<path d="M8 5 L19 12 L8 19 Z"></path>';
+    }
+
+    function resetSimulation() {
+      state.s = 0;
+      state.v = 0;
+      state.time = 0;
+      state.acceleration = 0;
+      state.thermal = 0;
+      state.graphData = [];
+      state.pathDots = [];
+      state.pathClock = 0;
+      recordPoint();
+      updateReadouts();
+    }
+
+    function moveToGround() {
+      let best = state.samples[0];
+      for (const sample of state.samples) {
+        if (sample.h < best.h) {
+          best = sample;
+        }
+      }
+      state.s = best.s;
+      state.v = 0;
+      state.acceleration = 0;
+      recordPoint();
+      updateReadouts();
+    }
+
+    function smoothCustomTrack() {
+      const points = state.customPoints;
+      for (let i = 1; i < points.length - 1; i++) {
+        points[i].h = (points[i - 1].h + points[i].h * 2 + points[i + 1].h) / 4;
+      }
+      rebuildTrack(true);
+    }
+
+    function getPointer(event) {
+      const rect = sceneCanvas.getBoundingClientRect();
+      const scaleX = sceneCanvas.width / rect.width;
+      const scaleY = sceneCanvas.height / rect.height;
+      return {
+        x: (event.clientX - rect.left) * scaleX,
+        y: (event.clientY - rect.top) * scaleY
+      };
+    }
+
+    function startDrag(event) {
+      if (state.track !== 'custom') {
+        return;
+      }
+      const pointer = getPointer(event);
+      let bestIndex = -1;
+      let bestDist = Infinity;
+      state.customPoints.forEach((point, index) => {
+        const screen = toScreen(point);
+        const dist = Math.hypot(pointer.x - screen.x, pointer.y - screen.y);
+        if (dist < bestDist) {
+          bestDist = dist;
+          bestIndex = index;
+        }
+      });
+      if (bestDist <= 28) {
+        state.draggingIndex = bestIndex;
+        sceneCanvas.setPointerCapture(event.pointerId);
+      }
+    }
+
+    function dragPoint(event) {
+      if (state.draggingIndex < 0 || state.track !== 'custom') {
+        return;
+      }
+      const pointer = getPointer(event);
+      const point = fromScreen(pointer.x, pointer.y);
+      const index = state.draggingIndex;
+      const prevX = index > 0 ? state.customPoints[index - 1].x + 0.04 : 0.04;
+      const nextX = index < state.customPoints.length - 1 ? state.customPoints[index + 1].x - 0.04 : 0.96;
+      state.customPoints[index] = {
+        x: clamp(point.x, prevX, nextX),
+        h: point.h
+      };
+      rebuildTrack(true);
+    }
+
+    function endDrag(event) {
+      if (state.draggingIndex >= 0) {
+        sceneCanvas.releasePointerCapture(event.pointerId);
+      }
+      state.draggingIndex = -1;
+    }
+
+    function bindEvents() {
+      els.playButton.addEventListener('click', () => setPlaying(!state.playing));
+      document.getElementById('resetButton').addEventListener('click', resetSimulation);
+      document.getElementById('groundButton').addEventListener('click', moveToGround);
+      document.getElementById('clearHeatButton').addEventListener('click', () => {
+        state.thermal = 0;
+        updateReadouts();
+      });
+      document.getElementById('clearGraphButton').addEventListener('click', () => {
+        state.graphData = [];
+      });
+      document.getElementById('smoothCustomButton').addEventListener('click', () => {
+        state.track = 'custom';
+        document.querySelectorAll('.track-button[data-track]').forEach(button => {
+          button.classList.toggle('active', button.dataset.track === state.track);
+        });
+        smoothCustomTrack();
+      });
+
+      document.querySelectorAll('.track-button[data-track]').forEach(button => {
+        button.addEventListener('click', () => {
+          state.track = button.dataset.track;
+          document.querySelectorAll('.track-button[data-track]').forEach(item => {
+            item.classList.toggle('active', item === button);
+          });
+          rebuildTrack(false);
+        });
+      });
+
+      document.querySelectorAll('.mode-button[data-mode]').forEach(button => {
+        button.addEventListener('click', () => {
+          state.graphMode = button.dataset.mode;
+          document.querySelectorAll('.mode-button[data-mode]').forEach(item => {
+            item.classList.toggle('active', item === button);
+          });
+        });
+      });
+
+      document.querySelectorAll('input[data-line]').forEach(input => {
+        input.addEventListener('change', () => {
+          state.graphLines[input.dataset.line] = input.checked;
+        });
+      });
+
+      els.massSlider.addEventListener('input', () => {
+        state.mass = Number(els.massSlider.value);
+        els.massValue.textContent = `${state.mass} kg`;
+        updateReadouts();
+      });
+      els.gravitySlider.addEventListener('input', () => {
+        state.gravity = Number(els.gravitySlider.value);
+        els.gravityValue.innerHTML = `${round(state.gravity, 1)} m/s<sup>2</sup>`;
+        updateReadouts();
+      });
+      els.frictionSlider.addEventListener('input', () => {
+        state.friction = Number(els.frictionSlider.value);
+        els.frictionValue.textContent = round(state.friction, 3);
+        updateReadouts();
+      });
+
+      els.gridToggle.addEventListener('change', () => state.showGrid = els.gridToggle.checked);
+      els.pathToggle.addEventListener('change', () => {
+        state.showPath = els.pathToggle.checked;
+        if (!state.showPath) {
+          state.pathDots = [];
+        } else {
+          recordPoint();
+        }
+      });
+      els.speedToggle.addEventListener('change', () => state.showSpeed = els.speedToggle.checked);
+      els.pieToggle.addEventListener('change', () => {
+        state.showPie = els.pieToggle.checked;
+        els.piePanel.style.display = state.showPie ? '' : 'none';
+      });
+
+      sceneCanvas.addEventListener('pointerdown', startDrag);
+      sceneCanvas.addEventListener('pointermove', dragPoint);
+      sceneCanvas.addEventListener('pointerup', endDrag);
+      sceneCanvas.addEventListener('pointercancel', endDrag);
+
+      window.addEventListener('resize', () => {
+        resizeCanvas(sceneCanvas);
+        resizeCanvas(graphCanvas);
+        state.layout = getLayout();
+      });
+    }
+
+    function frame(timestamp) {
+      resizeCanvas(sceneCanvas);
+      resizeCanvas(graphCanvas);
+      state.layout = getLayout();
+
+      if (!state.lastTimestamp) {
+        state.lastTimestamp = timestamp;
+      }
+      const dt = (timestamp - state.lastTimestamp) / 1000;
+      state.lastTimestamp = timestamp;
+
+      if (state.playing) {
+        simulate(dt);
+      }
+      updateReadouts();
+      drawScene();
+      drawGraph();
+      requestAnimationFrame(frame);
+    }
+
+    bindEvents();
+    resizeCanvas(sceneCanvas);
+    resizeCanvas(graphCanvas);
+    rebuildTrack(false);
+    resetSimulation();
+    requestAnimationFrame(frame);
+  </script>
+</body>
+</html>
