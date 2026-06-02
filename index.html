@@ -801,6 +801,67 @@
       font-weight: 720;
     }
 
+    .condition-test {
+      display: grid;
+      gap: 12px;
+    }
+
+    .condition-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+      background: #fbfcfb;
+      display: grid;
+      gap: 11px;
+    }
+
+    .condition-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .condition-head h3 {
+      color: var(--ink);
+      font-size: 15px;
+      margin: 0;
+    }
+
+    .condition-setup {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .condition-chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 27px;
+      border: 1px solid #cddbd7;
+      border-radius: 999px;
+      background: #fff;
+      color: var(--muted);
+      padding: 0 9px;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .condition-question {
+      color: var(--ink);
+      font-size: 14px;
+      line-height: 1.4;
+      font-weight: 720;
+    }
+
+    .condition-note {
+      border-left: 3px solid var(--accent);
+      padding-left: 10px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
     .report-output {
       min-height: 190px;
       border: 1px solid var(--line);
@@ -1177,6 +1238,7 @@
           <button class="tab-button active" type="button" data-tab="worksheet">Fitxa</button>
           <button class="tab-button" type="button" data-tab="data">Datuak</button>
           <button class="tab-button" type="button" data-tab="quiz">Galdetegia</button>
+          <button class="tab-button" type="button" data-tab="conditions">Baldintza-testak</button>
           <button class="tab-button" type="button" data-tab="report">Txostena</button>
           <button class="tab-button" type="button" data-tab="pdf">PDF entregagarria</button>
         </div>
@@ -1291,6 +1353,33 @@
           </div>
         </section>
 
+        <section class="tab-panel" id="tab-conditions">
+          <div class="condition-test">
+            <div class="condition-card">
+              <div class="condition-head">
+                <div>
+                  <p class="mission-kicker" id="conditionCounter">1/6 galdera</p>
+                  <h3 id="conditionTitle">Baldintza-testa</h3>
+                </div>
+                <span class="status-pill" id="conditionScore">0/6</span>
+              </div>
+              <div class="condition-setup" id="conditionSetup"></div>
+              <p class="condition-question" id="conditionQuestion"></p>
+              <div class="answer-list" id="conditionOptions"></div>
+              <p class="condition-note" id="conditionNote"></p>
+              <p class="feedback" id="conditionFeedback"></p>
+              <div class="form-actions">
+                <button class="tool-button" type="button" id="conditionPrevButton">Aurrekoa</button>
+                <button class="tool-button" type="button" id="conditionApplyButton">Baldintzak simulagailuan jarri</button>
+                <button class="tool-button primary" type="button" id="conditionCheckButton">Egiaztatu</button>
+                <button class="tool-button" type="button" id="conditionCaptureButton">Datuak hartu</button>
+                <button class="tool-button" type="button" id="conditionNextButton">Hurrengoa</button>
+              </div>
+            </div>
+            <p class="learning-intro">Erabili test hauek aurreikusteko: baldintzak irakurri, erantzun bat aukeratu, baldintzak simulagailuan jarri eta datuekin egiaztatu. Helburua ez da buruz asmatzea; aldagaiak kontrolatuta arrazoitzea baizik.</p>
+          </div>
+        </section>
+
         <section class="tab-panel" id="tab-report">
           <div class="form-actions" style="margin-bottom: 10px;">
             <button class="tool-button primary" type="button" id="generateReportButton">Txostena sortu</button>
@@ -1361,6 +1450,9 @@
       showSpeed: true,
       showPie: true,
       guideStep: 0,
+      conditionIndex: 0,
+      conditionScore: 0,
+      conditionAnswered: {},
       observations: [],
       quizScore: 0,
       graphData: [],
@@ -1448,6 +1540,93 @@
       }
     ];
 
+    const conditionScenarios = [
+      {
+        title: 'Masa bikoitza, altuera bera',
+        setup: { track: 'u', mass: 90, gravity: 9.8, friction: 0, graphMode: 'time' },
+        chips: ['U-pista', 'm = 90 kg', 'g = 9.8 m/s²', 'marruskadura = 0'],
+        question: '55 kg-ko probarekin alderatuta, beheko puntuko abiadura maximoa zer izango da gutxi gorabehera?',
+        note: 'Konparatu abiadura, ez bakarrik energia-balioa: masa handiagoarekin energia osoa handiagoa izan daiteke, baina abiadura ez da automatikoki bikoizten.',
+        options: [
+          { value: 'same-speed', label: 'Antzekoa: altuera bera bada, abiadura maximoa ez da masaren araberakoa eredu ideal honetan.' },
+          { value: 'double-speed', label: 'Bikoitza: masa bikoizteak abiadura bikoizten du.' },
+          { value: 'no-motion', label: 'Ez da mugituko, masa handiegia delako.' }
+        ],
+        correct: 'same-speed',
+        feedback: 'Ondo: energia potentzial osoa handiagoa da masarekin, baina energia zinetikoa ere masaren araberakoa da; v abiadura altuera eta grabitatearekin lotzen da.'
+      },
+      {
+        title: 'Marruskadura piztuta',
+        setup: { track: 'u', mass: 55, gravity: 9.8, friction: 0.065, graphMode: 'time' },
+        chips: ['U-pista', 'm = 55 kg', 'g = 9.8 m/s²', 'marruskadura = 0.065'],
+        question: 'Patinatzailea alde batetik bestera mugitzen denean, zer gertatuko da energia termikoarekin?',
+        note: 'Begiratu Et barra gorria eta energia totalaren grafikoa: energia ez da desagertzen, forma aldatzen du.',
+        options: [
+          { value: 'thermal-up', label: 'Handitu egingo da, marruskadurak energia mekanikoa energia termiko bihurtzen duelako.' },
+          { value: 'thermal-zero', label: 'Zero mantenduko da, energia termikoa ez dagoelako mugimenduarekin lotuta.' },
+          { value: 'potential-up', label: 'Energia potentziala bakarrik handituko da.' }
+        ],
+        correct: 'thermal-up',
+        feedback: 'Ondo: marruskadurak energia mekanikoa murrizten du, baina energia termiko gisa agertzen da.'
+      },
+      {
+        title: 'Ilargiko grabitatea',
+        setup: { track: 'u', mass: 55, gravity: 1.6, friction: 0, graphMode: 'time' },
+        chips: ['U-pista', 'm = 55 kg', 'g = 1.6 m/s²', 'marruskadura = 0'],
+        question: 'Altuera bera erabilita, Lurreko grabitatearekin alderatuta abiadura maximoa...',
+        note: 'Energia potentziala m·g·h da. g txikiagoa bada, altuera berean energia potentzial gutxiago dago.',
+        options: [
+          { value: 'lower-speed', label: 'Txikiagoa izango da.' },
+          { value: 'same-speed', label: 'Berdina izango da, altuera ez delako aldatu.' },
+          { value: 'higher-speed', label: 'Handiagoa izango da, Ilargian pisu gutxiago duelako.' }
+        ],
+        correct: 'lower-speed',
+        feedback: 'Ondo: g txikiagoarekin energia potentzial gutxiago dago, eta beheko puntuan abiadura txikiagoa lortzen da.'
+      },
+      {
+        title: 'Jupiterren grabitatea',
+        setup: { track: 'u', mass: 55, gravity: 24.8, friction: 0, graphMode: 'time' },
+        chips: ['U-pista', 'm = 55 kg', 'g = 24.8 m/s²', 'marruskadura = 0'],
+        question: 'Altuera bera erabilita, Jupiterren grabitatearekin zer espero duzu beheko puntuan?',
+        note: 'g handiagoak energia potentzial handiagoa ematen du altuera berean, eta energia hori zinetiko bihurtzen da.',
+        options: [
+          { value: 'higher-speed', label: 'Abiadura maximo handiagoa.' },
+          { value: 'same-speed', label: 'Abiadura berdina, masa bera delako.' },
+          { value: 'less-energy', label: 'Energia gutxiago, grabitatea handiagoa delako.' }
+        ],
+        correct: 'higher-speed',
+        feedback: 'Ondo: g handiagoa izateak energia potentzial handiagoa dakar; beheratzean, energia zinetikoa eta abiadura handitzen dira.'
+      },
+      {
+        title: 'Loop-a marruskadurarik gabe',
+        setup: { track: 'loop', mass: 55, gravity: 9.8, friction: 0, graphMode: 'time' },
+        chips: ['Loop-a', 'm = 55 kg', 'g = 9.8 m/s²', 'marruskadura = 0'],
+        question: 'Loop-a osatzeko baldintza nagusia zein da?',
+        note: 'Ez pentsatu masa bakarrik: hasierako altuerak energia potentziala ematen du, eta goiko puntura iristeko nahikoa energia behar da.',
+        options: [
+          { value: 'enough-energy', label: 'Hasierako energia/altuera nahikoa izatea.' },
+          { value: 'more-mass', label: 'Masa oso handia izatea.' },
+          { value: 'more-friction', label: 'Marruskadura handitzea.' }
+        ],
+        correct: 'enough-energy',
+        feedback: 'Ondo: loop-a osatzeko ez da masa handia behar, baizik eta hasierako energia mekaniko nahikoa.'
+      },
+      {
+        title: 'Loop-a marruskadurarekin',
+        setup: { track: 'loop', mass: 55, gravity: 9.8, friction: 0.085, graphMode: 'time' },
+        chips: ['Loop-a', 'm = 55 kg', 'g = 9.8 m/s²', 'marruskadura = 0.085'],
+        question: 'Marruskadura gehituta, loop-a osatzea zergatik da zailagoa?',
+        note: 'Konparatu energia termikoa eta patinatzailearen abiadura loop-aren goiko aldean.',
+        options: [
+          { value: 'thermal-loss', label: 'Energia mekanikoaren zati bat termiko bihurtzen delako.' },
+          { value: 'mass-loss', label: 'Patinatzaileak masa galtzen duelako.' },
+          { value: 'gravity-zero', label: 'Grabitatea desagertzen delako.' }
+        ],
+        correct: 'thermal-loss',
+        feedback: 'Ondo: marruskadurak energia mekanikoa kentzen dio mugimenduari; horregatik abiadura txikiagoa izan daiteke goiko puntuan.'
+      }
+    ];
+
     const els = {
       timeStatus: document.getElementById('timeStatus'),
       motionStatus: document.getElementById('motionStatus'),
@@ -1489,6 +1668,19 @@
       guideApplyButton: document.getElementById('guideApplyButton'),
       guideCaptureButton: document.getElementById('guideCaptureButton'),
       guideNextButton: document.getElementById('guideNextButton'),
+      conditionCounter: document.getElementById('conditionCounter'),
+      conditionTitle: document.getElementById('conditionTitle'),
+      conditionScore: document.getElementById('conditionScore'),
+      conditionSetup: document.getElementById('conditionSetup'),
+      conditionQuestion: document.getElementById('conditionQuestion'),
+      conditionOptions: document.getElementById('conditionOptions'),
+      conditionNote: document.getElementById('conditionNote'),
+      conditionFeedback: document.getElementById('conditionFeedback'),
+      conditionPrevButton: document.getElementById('conditionPrevButton'),
+      conditionApplyButton: document.getElementById('conditionApplyButton'),
+      conditionCheckButton: document.getElementById('conditionCheckButton'),
+      conditionCaptureButton: document.getElementById('conditionCaptureButton'),
+      conditionNextButton: document.getElementById('conditionNextButton'),
       captureDataButton: document.getElementById('captureDataButton'),
       captureDataButtonPanel: document.getElementById('captureDataButtonPanel'),
       clearDataButton: document.getElementById('clearDataButton'),
@@ -2305,13 +2497,67 @@
       updateGuidePanel();
     }
 
+    function renderConditionScenario() {
+      const scenario = conditionScenarios[state.conditionIndex];
+      els.conditionCounter.textContent = `${state.conditionIndex + 1}/${conditionScenarios.length} galdera`;
+      els.conditionTitle.textContent = scenario.title;
+      els.conditionScore.textContent = `${state.conditionScore}/${conditionScenarios.length}`;
+      els.conditionSetup.innerHTML = scenario.chips.map(chip => `<span class="condition-chip">${escapeHTML(chip)}</span>`).join('');
+      els.conditionQuestion.textContent = scenario.question;
+      els.conditionNote.textContent = scenario.note;
+      els.conditionFeedback.textContent = '';
+      els.conditionFeedback.className = 'feedback';
+      els.conditionOptions.innerHTML = scenario.options.map(option => `
+        <label><input type="radio" name="conditionAnswer" value="${escapeHTML(option.value)}"> ${escapeHTML(option.label)}</label>
+      `).join('');
+      els.conditionPrevButton.disabled = state.conditionIndex === 0;
+      els.conditionNextButton.disabled = state.conditionIndex === conditionScenarios.length - 1;
+    }
+
+    function applyConditionScenario() {
+      const scenario = conditionScenarios[state.conditionIndex];
+      applyExperimentSetup(scenario.setup);
+      setActiveTab('conditions');
+    }
+
+    function selectedConditionAnswer() {
+      const selected = document.querySelector('input[name="conditionAnswer"]:checked');
+      return selected ? selected.value : '';
+    }
+
+    function checkConditionScenario() {
+      const scenario = conditionScenarios[state.conditionIndex];
+      const selected = selectedConditionAnswer();
+      if (!selected) {
+        els.conditionFeedback.textContent = 'Aukeratu erantzun bat lehenik.';
+        els.conditionFeedback.className = 'feedback warn';
+        return;
+      }
+      const isCorrect = selected === scenario.correct;
+      if (isCorrect && !state.conditionAnswered[state.conditionIndex]) {
+        state.conditionScore += 1;
+      }
+      state.conditionAnswered[state.conditionIndex] = true;
+      els.conditionScore.textContent = `${state.conditionScore}/${conditionScenarios.length}`;
+      updateLearningStatus();
+      els.conditionFeedback.textContent = isCorrect ? scenario.feedback : 'Saiatu berriro: jarri baldintzak simulagailuan eta begiratu energia-barrak, abiadura eta grafikoa.';
+      els.conditionFeedback.className = `feedback ${isCorrect ? 'good' : 'warn'}`;
+    }
+
+    function moveConditionScenario(delta) {
+      state.conditionIndex = clamp(state.conditionIndex + delta, 0, conditionScenarios.length - 1);
+      renderConditionScenario();
+    }
+
     function captureObservation() {
       const energy = currentEnergy();
       const sample = energy.sample;
       const guide = guideSteps[state.guideStep];
+      const activeCondition = document.getElementById('tab-conditions').classList.contains('active');
+      const phase = activeCondition ? conditionScenarios[state.conditionIndex].title : guide.short;
       state.observations.push({
         number: state.observations.length + 1,
-        phase: guide.short,
+        phase,
         track: trackNames[state.track],
         mass: state.mass,
         gravity: state.gravity,
@@ -2392,7 +2638,7 @@
     }
 
     function updateLearningStatus() {
-      els.learningStatus.textContent = `${state.observations.length} datu · ${state.quizScore}/${quizQuestions.length} galdetegi`;
+      els.learningStatus.textContent = `${state.observations.length} datu · ${state.quizScore}/${quizQuestions.length} galdetegi · ${state.conditionScore}/${conditionScenarios.length} baldintza`;
     }
 
     function fieldValue(element) {
@@ -2426,6 +2672,7 @@
         <p><strong>Ondorioa:</strong> ${escapeHTML(fieldValue(els.conclusionInput) || 'Ondorioa osatu gabe.')}</p>
         <p><strong>Transferentzia:</strong> ${escapeHTML(fieldValue(els.transferInput) || 'Transferentzia osatu gabe.')}</p>
         <p><strong>Galdetegia:</strong> ${state.quizScore}/${quizQuestions.length}</p>
+        <p><strong>Baldintza-testak:</strong> ${state.conditionScore}/${conditionScenarios.length}</p>
       `;
       setActiveTab('report');
     }
@@ -2595,6 +2842,11 @@
       els.guideNextButton.addEventListener('click', () => moveGuide(1));
       els.guideApplyButton.addEventListener('click', applyGuideStep);
       els.guideCaptureButton.addEventListener('click', captureObservation);
+      els.conditionPrevButton.addEventListener('click', () => moveConditionScenario(-1));
+      els.conditionNextButton.addEventListener('click', () => moveConditionScenario(1));
+      els.conditionApplyButton.addEventListener('click', applyConditionScenario);
+      els.conditionCheckButton.addEventListener('click', checkConditionScenario);
+      els.conditionCaptureButton.addEventListener('click', captureObservation);
       els.captureDataButton.addEventListener('click', captureObservation);
       els.captureDataButtonPanel.addEventListener('click', captureObservation);
       els.clearDataButton.addEventListener('click', clearObservations);
@@ -2609,7 +2861,7 @@
       quizQuestions.forEach(question => {
         document.querySelectorAll(`input[name="${question.name}"]`).forEach(input => {
           input.addEventListener('change', () => {
-            els.learningStatus.textContent = `${state.observations.length} datu · ${checkedAnswerCount()}/${quizQuestions.length} erantzun`;
+            els.learningStatus.textContent = `${state.observations.length} datu · ${checkedAnswerCount()}/${quizQuestions.length} erantzun · ${state.conditionScore}/${conditionScenarios.length} baldintza`;
           });
         });
       });
@@ -2652,6 +2904,7 @@
     rebuildTrack(false);
     resetSimulation();
     updateGuidePanel();
+    renderConditionScenario();
     renderObservations();
     updateLearningStatus();
     requestAnimationFrame(frame);

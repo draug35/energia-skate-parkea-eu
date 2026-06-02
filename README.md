@@ -10,6 +10,7 @@ Euskarazko simulazio interaktibo autonomoa energia mekanikoa lantzeko.
 - Energia-denbora eta energia-posizio grafikoak.
 - Zirkulu-diagrama eta neurketa irakurgarriak.
 - Ikerketa gidatua, fitxa integratua, datu-taula, galdetegia eta txosten-laburpena.
+- Baldintza-testak: masa, grabitatea, marruskadura eta loop-a aldatuta aurreikusteko galderak.
 - PDF entregagarria, simulagailuarekin osatzeko lau jarduera gidaturekin.
 
 ## Nola erabili
