@@ -210,6 +210,10 @@
       transition: border-color 140ms ease, background 140ms ease, transform 140ms ease;
     }
 
+    a.tool-button {
+      text-decoration: none;
+    }
+
     .tool-button:hover,
     .track-button:hover,
     .mode-button:hover {
@@ -823,6 +827,28 @@
       padding-left: 18px;
     }
 
+    .pdf-resource {
+      display: grid;
+      gap: 12px;
+    }
+
+    .pdf-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: #fbfcfb;
+      display: grid;
+      gap: 8px;
+    }
+
+    .pdf-frame {
+      width: 100%;
+      min-height: 580px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+
     @media (max-width: 1120px) {
       .workspace {
         grid-template-columns: 248px minmax(390px, 1fr);
@@ -1152,6 +1178,7 @@
           <button class="tab-button" type="button" data-tab="data">Datuak</button>
           <button class="tab-button" type="button" data-tab="quiz">Galdetegia</button>
           <button class="tab-button" type="button" data-tab="report">Txostena</button>
+          <button class="tab-button" type="button" data-tab="pdf">PDF entregagarria</button>
         </div>
 
         <section class="tab-panel active" id="tab-worksheet">
@@ -1271,6 +1298,20 @@
           </div>
           <div class="report-output" id="reportOutput">
             <p>Txostena sortzean, fitxako erantzunak, hartutako datuak eta galdetegiaren emaitza hemen agertuko dira.</p>
+          </div>
+        </section>
+
+        <section class="tab-panel" id="tab-pdf">
+          <div class="pdf-resource">
+            <div class="pdf-card">
+              <h2>Fitxa entregagarria</h2>
+              <p class="learning-intro">Lau jarduera gidatu ditu: energia mekanikoa marruskadurarik gabe, masa aldatuta, marruskadura eta energia termikoa, eta loop-aren erronka. Ikasleak simulagailuan datuak hartu eta PDFan erantzunak entregatu ditzake.</p>
+              <div class="form-actions">
+                <a class="tool-button primary" href="assets/energia-skate-parkea-fitxa-entregagarria.pdf" download>PDFa deskargatu</a>
+                <a class="tool-button" href="assets/energia-skate-parkea-fitxa-entregagarria.pdf" target="_blank" rel="noopener">Beste leiho batean ireki</a>
+              </div>
+            </div>
+            <iframe class="pdf-frame" title="Energia skate-parkean fitxa entregagarria" src="assets/energia-skate-parkea-fitxa-entregagarria.pdf"></iframe>
           </div>
         </section>
       </section>
