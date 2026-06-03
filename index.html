@@ -606,6 +606,36 @@
       transition: width 180ms ease;
     }
 
+    .journey-help {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      background: #eef5f3;
+      border: 1px solid #cfe0db;
+    }
+
+    .journey-help-step {
+      flex: 0 0 auto;
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: var(--accent);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 760;
+    }
+
+    .journey-help-text {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.4;
+      color: var(--ink);
+    }
+
     .journey-steps {
       display: grid;
       grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -1368,6 +1398,10 @@
               <em>Txostena</em>
             </button>
           </div>
+          <div class="journey-help" aria-live="polite">
+            <span class="journey-help-step" id="journeyHelpStep">1</span>
+            <p class="journey-help-text" id="journeyHelpText"></p>
+          </div>
         </section>
 
         <section class="stage" id="simulationStage" aria-label="Simulazioa">
@@ -1789,11 +1823,16 @@
     ];
 
     const journeySteps = [
-      { title: 'Prestatu', detail: 'Hipotesia', tab: 'worksheet', guideStep: 0, target: 'learning' },
-      { title: 'Simulatu', detail: 'Fase gidatua', tab: null, guideStep: 1, target: 'simulation' },
-      { title: 'Datuak', detail: 'Neurketak', tab: 'data', guideStep: null, target: 'learning' },
-      { title: 'Erantzun', detail: 'Testak', tab: 'quiz', guideStep: null, target: 'learning' },
-      { title: 'Amaitu', detail: 'Txostena', tab: 'report', guideStep: null, target: 'learning' }
+      { title: 'Prestatu', detail: 'Hipotesia', tab: 'worksheet', guideStep: 0, target: 'learning',
+        help: 'Idatzi zure hipotesia eta aldagaien plana "Fitxa" atalean: zer uste duzu gertatuko dela energiarekin patinatzailea jaistean?' },
+      { title: 'Simulatu', detail: 'Fase gidatua', tab: null, guideStep: 1, target: 'simulation',
+        help: 'Sakatu "Abiarazi" eta begiratu energia-barrak, abiadura eta grafikoa nola aldatzen diren. Probatu masa, grabitatea eta marruskadura aldatuz.' },
+      { title: 'Datuak', detail: 'Neurketak', tab: 'data', guideStep: null, target: 'learning',
+        help: 'Une esanguratsuetan (puntu altuena, beheko puntua...) sakatu "Datuak hartu" neurketak taulan gordetzeko.' },
+      { title: 'Erantzun', detail: 'Testak', tab: 'quiz', guideStep: null, target: 'learning',
+        help: 'Erantzun galdetegiari eta baldintza-testei. Zalantzaren bat baduzu, itzuli simulaziora eta egiaztatu zure erantzuna.' },
+      { title: 'Amaitu', detail: 'Txostena', tab: 'report', guideStep: null, target: 'learning',
+        help: 'Sakatu "Txostena sortu", errepasatu dena eta gero "Txostena deskargatu" fitxategia irakasleari entregatzeko.' }
     ];
 
     const quizQuestions = [
@@ -1955,6 +1994,8 @@
       guideNextButton: document.getElementById('guideNextButton'),
       journeyStatus: document.getElementById('journeyStatus'),
       journeyProgress: document.getElementById('journeyProgress'),
+      journeyHelpStep: document.getElementById('journeyHelpStep'),
+      journeyHelpText: document.getElementById('journeyHelpText'),
       journeyNextButton: document.getElementById('journeyNextButton'),
       simulationStage: document.getElementById('simulationStage'),
       learningPanel: document.getElementById('learningPanel'),
@@ -2802,6 +2843,8 @@
       const step = journeySteps[state.journeyStep];
       els.journeyStatus.textContent = `${state.journeyStep + 1}/${journeySteps.length} · ${step.title}`;
       els.journeyProgress.style.width = `${(state.journeyStep / (journeySteps.length - 1)) * 100}%`;
+      if (els.journeyHelpStep) els.journeyHelpStep.textContent = String(state.journeyStep + 1);
+      if (els.journeyHelpText) els.journeyHelpText.textContent = step.help || '';
       els.journeyNextButton.textContent = state.journeyStep === journeySteps.length - 1 ? 'Amaituta' : 'Hurrengo pausoa';
       els.journeyNextButton.disabled = state.journeyStep === journeySteps.length - 1;
       document.querySelectorAll('.journey-step').forEach(button => {
