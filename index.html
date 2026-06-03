@@ -165,7 +165,7 @@
       min-width: 0;
       min-height: 0;
       display: grid;
-      grid-template-rows: minmax(340px, 1fr) minmax(246px, 0.44fr);
+      grid-template-rows: minmax(340px, 1fr) minmax(300px, 0.52fr);
       overflow: hidden;
     }
 
@@ -182,6 +182,8 @@
       display: block;
       width: 100%;
       height: 100%;
+      min-height: 0;
+      min-width: 0;
     }
 
     .stage-controls {
@@ -442,8 +444,8 @@
 
     .graph-panel {
       display: grid;
-      grid-template-rows: auto 1fr;
-      min-height: 246px;
+      grid-template-rows: auto minmax(0, 1fr);
+      min-height: 300px;
       background: #fff;
     }
 
@@ -2518,8 +2520,10 @@
 
     function drawGraph() {
       const ctx = graphCtx;
-      const w = graphCanvas.width;
-      const h = graphCanvas.height;
+      const dpr = window.devicePixelRatio || 1;
+      const w = graphCanvas.width / dpr;
+      const h = graphCanvas.height / dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, w, h);
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, w, h);
