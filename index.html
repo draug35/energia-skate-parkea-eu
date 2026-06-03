@@ -786,6 +786,27 @@
       white-space: nowrap;
     }
 
+    .learning-head-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .save-indicator {
+      font-size: 12px;
+      font-weight: 720;
+      color: var(--kinetic);
+      opacity: 0;
+      transition: opacity 200ms ease;
+      white-space: nowrap;
+    }
+
+    .save-indicator.show {
+      opacity: 1;
+    }
+
     .learning-tabs {
       display: flex;
       flex-wrap: wrap;
@@ -1477,9 +1498,13 @@
         <div class="learning-head">
           <div>
             <h2>Ikaslearen lan-eremua</h2>
-            <p class="learning-intro">Energia mekanikoaren kontserbazioa aztertzeko fitxa, datu-bilketa eta galdetegia.</p>
+            <p class="learning-intro">Energia mekanikoaren kontserbazioa aztertzeko fitxa, datu-bilketa eta galdetegia. Erantzunak <strong>automatikoki gordetzen dira gailu honetan</strong>; bukatzean, deskargatu txostena entregatzeko.</p>
           </div>
-          <div class="status-pill" id="learningStatus">0 datu · 0/4 galdetegi</div>
+          <div class="learning-head-actions">
+            <span class="save-indicator" id="saveIndicator" aria-live="polite">✓ Gordeta</span>
+            <span class="status-pill" id="learningStatus">0 datu · 0/4 galdetegi</span>
+            <button class="tool-button" type="button" id="resetProgressButton" title="Lan guztia ezabatu gailu honetatik (ordenagailu partekatuetan)">Hasi berria</button>
+          </div>
         </div>
 
         <div class="learning-tabs" role="tablist" aria-label="Lan-eremuko atalak">
@@ -1631,6 +1656,7 @@
         <section class="tab-panel" id="tab-report">
           <div class="form-actions" style="margin-bottom: 10px;">
             <button class="tool-button primary" type="button" id="generateReportButton">Txostena sortu</button>
+            <button class="tool-button" type="button" id="downloadReportButton">Txostena deskargatu</button>
             <button class="tool-button" type="button" id="printReportButton">Inprimatu</button>
           </div>
           <div class="report-output" id="reportOutput">
@@ -1962,8 +1988,11 @@
       checkQuizButton: document.getElementById('checkQuizButton'),
       quizScore: document.getElementById('quizScore'),
       generateReportButton: document.getElementById('generateReportButton'),
+      downloadReportButton: document.getElementById('downloadReportButton'),
       printReportButton: document.getElementById('printReportButton'),
-      reportOutput: document.getElementById('reportOutput')
+      reportOutput: document.getElementById('reportOutput'),
+      saveIndicator: document.getElementById('saveIndicator'),
+      resetProgressButton: document.getElementById('resetProgressButton')
     };
 
     function clamp(value, min, max) {
@@ -2902,6 +2931,7 @@
       updateLearningStatus();
       els.conditionFeedback.textContent = isCorrect ? scenario.feedback : 'Saiatu berriro: jarri baldintzak simulagailuan eta begiratu energia-barrak, abiadura eta grafikoa.';
       els.conditionFeedback.className = `feedback ${isCorrect ? 'good' : 'warn'}`;
+      saveProgress();
     }
 
     function moveConditionScenario(delta) {
@@ -2931,6 +2961,7 @@
       });
       renderObservations();
       updateLearningStatus();
+      saveProgress();
       if (state.journeyStep < 2) {
         setJourneyStep(2);
       }
@@ -2960,6 +2991,7 @@
       state.observations = [];
       renderObservations();
       updateLearningStatus();
+      saveProgress();
     }
 
     function setActiveTab(tabName, options = {}) {
@@ -3006,6 +3038,7 @@
       if (score === quizQuestions.length && state.journeyStep < 4) {
         setJourneyStep(4);
       }
+      saveProgress();
       return score;
     }
 
@@ -3047,6 +3080,160 @@
         <p><strong>Baldintza-testak:</strong> ${state.conditionScore}/${conditionScenarios.length}</p>
       `;
       setActiveTab('report');
+    }
+
+    // ---- Aurrerapena gordetzea (localStorage, gailu honetan) ----
+    const STORAGE_KEY = 'energia-skate-parkea:v1';
+    const persistedFieldIds = ['studentName', 'studentGroup', 'hypothesisInput', 'methodInput', 'graphInput', 'conclusionInput', 'transferInput'];
+    let saveTimer = null;
+    let flashTimer = null;
+
+    function flashSaved() {
+      if (!els.saveIndicator) return;
+      els.saveIndicator.classList.add('show');
+      clearTimeout(flashTimer);
+      flashTimer = setTimeout(() => els.saveIndicator.classList.remove('show'), 1400);
+    }
+
+    function saveProgress() {
+      try {
+        const data = {
+          fields: {},
+          quiz: {},
+          observations: state.observations,
+          quizScore: state.quizScore,
+          conditionScore: state.conditionScore,
+          conditionAnswered: state.conditionAnswered,
+          conditionIndex: state.conditionIndex,
+          savedAt: Date.now()
+        };
+        persistedFieldIds.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) data.fields[id] = el.value;
+        });
+        quizQuestions.forEach(q => { data.quiz[q.name] = getSelectedAnswer(q.name); });
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        flashSaved();
+      } catch (err) {
+        /* localStorage erabilgaitz (modu pribatua / betea): isilik jarraitu */
+      }
+    }
+
+    function scheduleSave() {
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(saveProgress, 400);
+    }
+
+    function loadProgress() {
+      let data = null;
+      try {
+        data = JSON.parse(localStorage.getItem(STORAGE_KEY));
+      } catch (err) {
+        data = null;
+      }
+      if (!data) return;
+      if (data.fields) {
+        Object.entries(data.fields).forEach(([id, value]) => {
+          const el = document.getElementById(id);
+          if (el && typeof value === 'string') el.value = value;
+        });
+      }
+      if (data.quiz) {
+        Object.entries(data.quiz).forEach(([name, value]) => {
+          if (!value) return;
+          const input = document.querySelector(`input[name="${name}"][value="${(window.CSS && CSS.escape) ? CSS.escape(value) : value}"]`);
+          if (input) input.checked = true;
+        });
+      }
+      if (Array.isArray(data.observations)) state.observations = data.observations;
+      if (typeof data.quizScore === 'number') {
+        state.quizScore = data.quizScore;
+        els.quizScore.textContent = `${state.quizScore}/${quizQuestions.length}`;
+      }
+      if (typeof data.conditionScore === 'number') state.conditionScore = data.conditionScore;
+      if (data.conditionAnswered && typeof data.conditionAnswered === 'object') state.conditionAnswered = data.conditionAnswered;
+      if (typeof data.conditionIndex === 'number') state.conditionIndex = clamp(data.conditionIndex, 0, conditionScenarios.length - 1);
+      renderObservations();
+      renderConditionScenario();
+      updateLearningStatus();
+    }
+
+    function resetProgress() {
+      const ok = window.confirm('Ziur? Ikasle honen lan guztia (fitxa, datuak, galdetegia eta baldintza-testak) gailu honetatik ezabatuko da.');
+      if (!ok) return;
+      try { localStorage.removeItem(STORAGE_KEY); } catch (err) {}
+      location.reload();
+    }
+
+    // ---- Txostena fitxategi gisa deskargatzea (entregatzeko) ----
+    function observationTableHTML() {
+      if (!state.observations.length) {
+        return '<p>Ez da neurketarik jaso.</p>';
+      }
+      const rows = state.observations.map(obs => `
+        <tr>
+          <td>${obs.number}</td>
+          <td style="text-align:left">${escapeHTML(obs.phase)} · ${escapeHTML(obs.track)}</td>
+          <td>${obs.mass} kg</td>
+          <td>${round(obs.gravity, 1)}</td>
+          <td>${round(obs.friction, 3)}</td>
+          <td>${round(obs.height, 2)} m</td>
+          <td>${round(obs.speed, 2)} m/s</td>
+          <td>${joules(obs.kinetic)}</td>
+          <td>${joules(obs.potential)}</td>
+          <td>${joules(obs.thermal)}</td>
+          <td>${joules(obs.total)}</td>
+        </tr>`).join('');
+      return `<table>
+        <thead><tr><th>#</th><th style="text-align:left">Fasea</th><th>Masa</th><th>g</th><th>Marr.</th><th>Altuera</th><th>v</th><th>Ez</th><th>Ep</th><th>Et</th><th>Guztira</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+    }
+
+    function reportHTMLDocument() {
+      const today = new Date().toLocaleDateString('eu-ES');
+      const name = fieldValue(els.studentName) || 'Izena jarri gabe';
+      const group = fieldValue(els.studentGroup) || 'Taldea jarri gabe';
+      const block = (value, fallback) => `<div class="ans">${escapeHTML(fieldValue(value) || fallback)}</div>`;
+      const body = `
+        <h1>Energia skate-parkean — ikerketa-txostena</h1>
+        <p class="meta"><strong>Ikaslea:</strong> ${escapeHTML(name)} &middot; <strong>Taldea:</strong> ${escapeHTML(group)} &middot; <strong>Data:</strong> ${today}</p>
+        <h2>1. Hipotesia</h2>${block(els.hypothesisInput, 'Hipotesirik gabe.')}
+        <h2>2. Aldagaiak kontrolatzea</h2>${block(els.methodInput, 'Ez da prozedurarik azaldu.')}
+        <h2>3. Grafikoaren interpretazioa</h2>${block(els.graphInput, 'Interpretazioa osatu gabe.')}
+        <h2>4. Ondorio zientifikoa</h2>${block(els.conclusionInput, 'Ondorioa osatu gabe.')}
+        <h2>5. Transferentzia</h2>${block(els.transferInput, 'Transferentzia osatu gabe.')}
+        <h2>Datuak (${state.observations.length})</h2>
+        ${observationTableHTML()}
+        <h2>Emaitzak</h2>
+        <p>Galdetegia: <strong>${state.quizScore}/${quizQuestions.length}</strong> &middot; Baldintza-testak: <strong>${state.conditionScore}/${conditionScenarios.length}</strong></p>`;
+      return `<!doctype html><html lang="eu"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Energia skate-parkean — ${escapeHTML(name)}</title><style>
+        body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;max-width:820px;margin:24px auto;padding:0 18px;color:#16201f;line-height:1.55}
+        h1{font-size:21px;margin:0 0 6px}h2{font-size:15px;color:#17615e;margin:22px 0 6px}
+        .meta{color:#566;font-size:13px;margin:0 0 8px}
+        .ans{background:#f6f8f7;border-left:3px solid #267c78;border-radius:4px;padding:8px 11px;white-space:pre-wrap}
+        table{border-collapse:collapse;width:100%;font-size:12px;margin-top:4px}
+        th,td{border:1px solid #d3ddd9;padding:4px 7px;text-align:right}th{background:#eef3f1}
+        @media print{body{margin:0}}
+      </style></head><body>${body}</body></html>`;
+    }
+
+    function downloadReport() {
+      if (checkedAnswerCount() === quizQuestions.length) {
+        checkQuiz(false);
+      }
+      generateReport();
+      const html = reportHTMLDocument();
+      const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const safeName = (fieldValue(els.studentName) || 'ikaslea').replace(/[^\p{L}\p{N}_-]+/gu, '_').replace(/^_+|_+$/g, '').slice(0, 40) || 'ikaslea';
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `energia-skate_${safeName}.html`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setTimeout(() => URL.revokeObjectURL(url), 1500);
     }
 
     function setPlaying(playing) {
@@ -3230,7 +3417,14 @@
       els.clearDataButton.addEventListener('click', clearObservations);
       els.checkQuizButton.addEventListener('click', () => checkQuiz(true));
       els.generateReportButton.addEventListener('click', generateReport);
+      els.downloadReportButton.addEventListener('click', downloadReport);
       els.printReportButton.addEventListener('click', () => window.print());
+      els.resetProgressButton.addEventListener('click', resetProgress);
+
+      persistedFieldIds.forEach(id => {
+        const field = document.getElementById(id);
+        if (field) field.addEventListener('input', scheduleSave);
+      });
 
       document.querySelectorAll('.tab-button').forEach(button => {
         button.addEventListener('click', () => setActiveTab(button.dataset.tab));
@@ -3240,6 +3434,7 @@
         document.querySelectorAll(`input[name="${question.name}"]`).forEach(input => {
           input.addEventListener('change', () => {
             els.learningStatus.textContent = `${state.observations.length} datu · ${checkedAnswerCount()}/${quizQuestions.length} erantzun · ${state.conditionScore}/${conditionScenarios.length} baldintza`;
+            scheduleSave();
           });
         });
       });
@@ -3286,6 +3481,7 @@
     renderConditionScenario();
     renderObservations();
     updateLearningStatus();
+    loadProgress();
     requestAnimationFrame(frame);
   </script>
 </body>
